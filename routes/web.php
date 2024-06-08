@@ -31,7 +31,7 @@ Route::middleware(['check.password'])->group(function () {
     Route::patch('/forums/{id}/update-status', [ForumController::class, 'updateStatus'])->name('updateForumStatus');
     Route::post('/forums/shuffle', [ForumController::class, 'shuffle'])->name('shuffleForums');
     Route::patch('/forums/{id}/update-link', [ForumController::class, 'updateLink'])->name('updateForumLink');
-    Route::delete('/forums/{id}', 'ForumController@deleteForum')->name('deleteForum');
+    Route::delete('/forums/{id}', [ForumController::class, 'deleteForum'])->name('deleteForum');
 
     Route::get('/casesolve', [CaseSolveController::class, 'index'])->name('casesolve.index');
     Route::get('/casesolve/create', [CaseSolveController::class, 'create'])->name('casesolve.create');
