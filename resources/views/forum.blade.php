@@ -106,6 +106,12 @@
                                                             class="card-text d-inline">{{ $forum->link }}</a>
                                                     </div>
                                                 </form>
+                                                <form method="POST" action="{{ route('deleteForum', $forum->id) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-link text-danger"><i
+                                                            class="fas fa-trash-alt"></i></button>
+                                                </form>
                                             </div>
                                         @endif
                                     @endforeach

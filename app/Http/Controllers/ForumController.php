@@ -22,17 +22,17 @@ class ForumController extends Controller
         $request->validate([
             'link' => 'required|unique:forums|max:255',
         ]);
-    
+
         Forum::create([
             'link' => $request->link,
             'trainee_id' => null,
             'forum_status' => 'unshuffle'
         ]);
-    
+
         return redirect()->route('showForum')
             ->with('success', 'Forum link created successfully.');
     }
-    
+
 
     public function shuffle(Request $request)
     {
@@ -91,5 +91,13 @@ class ForumController extends Controller
         $forum->save();
 
         return redirect()->back()->with('success', 'Forum link updated successfully');
+    }
+
+    public function deleteForum($id)
+    {
+        $forum = Forum::findOrFail($id);
+        $forum->delete();
+
+        return redirect()->back()->with('success', 'Forum deleted successfully.');
     }
 }
