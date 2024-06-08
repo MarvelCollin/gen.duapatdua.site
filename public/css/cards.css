@@ -1,0 +1,26 @@
+.card {
+    border-radius: 5% !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+.card:hover {
+    transform: translateY(-15px); 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); 
+}
+
+.card-body {
+    border-radius: 5% !important;
+}
+
+.row {
+    margin: 3vh;
+}
+
+.card-title {
+    font-weight: 800;
+}
+
+.session {
+    font-size: 3rem;
+}

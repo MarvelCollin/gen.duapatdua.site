@@ -1,0 +1,39 @@
+.card-title {
+    font-size: 2vw;
+}
+
+.card-text {
+    font-size: 1.5vw;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom-file-input::before {
+    content: 'Choose File';
+    display: inline-block;
+    background: linear-gradient(to bottom, #f9f9f9, #e3e3e3);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 6px 12px;
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.custom-file-input:hover::before {
+    border-color: #007bff;
+}
+
+.custom-file-input:active::before {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.custom-file-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
