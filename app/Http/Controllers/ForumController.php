@@ -96,8 +96,15 @@ class ForumController extends Controller
     public function deleteForum($id)
     {
         $forum = Forum::findOrFail($id);
+        $traineeId = $forum->trainee_id;
+    
         $forum->delete();
-
+    
+        $trainee = Trainee::find($traineeId);
+        $trainee->totalforum = Forum::where('trainee_id', $traineeId)->where('forum_status', 'yes')->count();
+        $trainee->save();
+    
         return redirect()->back()->with('success', 'Forum deleted successfully.');
     }
+    
 }

@@ -4,7 +4,7 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/cards.css') }}">
-    <div class="modal fade" id="shuffleForumsModal" tabindex="-1" role="dialog" aria-labelledby="shuffleForumsModalLabel"
+    <div class="modal" id="shuffleForumsModal" tabindex="-1" role="dialog" aria-labelledby="shuffleForumsModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -88,20 +88,24 @@
                     @foreach ($sortedTrainees as $t)
                         <div class="col-md-6 mb-4">
                             <div class="card">
-                                <div class="card-body animate__animated animate__fadeIn">
+                                <div class="card-body ">
                                     <h5 class="card-title text-center">{{ $t->trainee_number }} - {{ $t->name }} |
                                         Total : {{ $t->totalForum }}</h5>
                                         @foreach ($forums as $forum)
                                         @if ($t->id == $forum->trainee_id)
                                             <div class="forum-link-container mb-2" data-status="{{ $forum->forum_status }}">
                                                 <div class="d-flex flex-row align-items-start">
-                                                    <div class="form-check mb-2">
-                                                        <input type="checkbox" class="form-check-input" name="forum_status"
-                                                            value="yes" id="forum-{{ $forum->id }}"
-                                                            {{ $forum->forum_status == 'yes' ? 'checked' : '' }}
-                                                            onchange="this.form.submit()">
-                                                        <a href="{{ $forum->link }}" class="card-text d-inline">{{ $forum->link }}</a>
-                                                    </div>
+                                                    <form method="POST" action="{{ route('updateForumStatus', $forum->id) }}" class="d-flex flex-row align-items-start">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="form-check mb-2">
+                                                            <input type="checkbox" class="form-check-input" name="forum_status"
+                                                                value="yes" id="forum-{{ $forum->id }}"
+                                                                {{ $forum->forum_status == 'yes' ? 'checked' : '' }}
+                                                                onchange="this.form.submit()">
+                                                            <a href="{{ $forum->link }}" class="card-text d-inline">{{ $forum->link }}</a>
+                                                        </div>
+                                                    </form>
                                                     <div class="ml-auto">
                                                         <form method="POST" action="{{ route('deleteForum', $forum->id) }}" class="delete-forum-form" onsubmit="return confirm('Are you sure you want to delete this forum?');">
                                                             @csrf
@@ -113,6 +117,7 @@
                                             </div>
                                         @endif
                                     @endforeach
+                                    
                                     
                                 </div>
                             </div>
