@@ -114,90 +114,91 @@
         @endforeach
 
         <div class="modal fade" id="leaderboardModal" tabindex="-1" role="dialog" aria-labelledby="leaderboardModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="leaderboardModalLabel">Progress Angkatan</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-center">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead class="text-center">
-                                <tr>
-                                    <th>Ranks</th>
-                                    <th>Trainee</th>
-                                    <th class="pr-2">Name</th>
-                                    @foreach ($detail->caseSubtitles as $subtitle)
-                                    <th>{{ $subtitle->subtitle }}</th>
-                                    @endforeach
-                                    <th class="pr-2">Progress</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center">
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="leaderboardModalLabel">Progress Angkatan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Ranks</th>
+                                        <th>Trainee</th>
+                                        <th class="pr-2">Name</th>
+                                        @foreach ($detail->caseSubtitles as $subtitle)
+                                            <th>{{ $subtitle->subtitle }}</th>
+                                        @endforeach
+                                        <th class="pr-2">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
 
-                                @php
-                                $sortedDetails = $sortedDetails->sortByDesc(function ($detail) {
-                                    return $detail->caseSubtitles->sum('percentage');
-                                });
-
-                                $index = 1;
-                                @endphp
-
-                                @foreach ($sortedDetails as $key => $detail)
-                                @php
-                                $totalPercentage = $detail->caseSubtitles->sum('percentage');
-                                $totalSubtitleCount = $detail->caseSubtitles->count();
-                                $totalPercentageDone = $totalSubtitleCount > 0 ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2) : 0;
-                                @endphp
-                                <tr>
-                                    <td style="background-color: #ffffff; color: #000000; width: 150px;">
-                                        #{{ $index++ }}</td>
-                                    <td style="background-color: #ffffff; color: #000000; width: 150px;">
-                                        {{ $detail->trainee->trainee_number }}</td>
-                                    <td style="background-color: #ffffff; color: #000000; width: 250px;">
-                                        {{ $detail->trainee->name }}</td>
-                                    @foreach ($detail->caseSubtitles as $subtitle)
                                     @php
-                                    $percentage = $subtitle->percentage;
-                                    $bgColor = '';
-                                    $fontColor = '';
-                                    if ($percentage == '0') {
-                                    $bgColor = '#ffffff';
-                                    $fontColor = '#000000';
-                                    } elseif ($percentage == '25') {
-                                    $bgColor = '#ff0000';
-                                    $fontColor = '#ffffff';
-                                    } elseif ($percentage == '50') {
-                                    $bgColor = '#ffff00';
-                                    $fontColor = '#000000';
-                                    } elseif ($percentage == '75') {
-                                    $bgColor = '#0000ff';
-                                    $fontColor = '#ffffff';
-                                    } elseif ($percentage == '100') {
-                                    $bgColor = '#00ff00';
-                                    $fontColor = '#000000';
-                                    }
+                                        $sortedDetails = $sortedDetails->sortByDesc(function ($detail) {
+                                            return $detail->caseSubtitles->sum('percentage');
+                                        });
+
+                                        $index = 1;
                                     @endphp
-                                    <td
-                                        style="background-color: {{ $bgColor }}; color: {{ $fontColor }}; text-align: center; font-weight: bold; width: 150px;">
-                                        {{ $percentage }}%
-                                    </td>
+                                    @foreach ($sortedDetails as $key => $detail)
+                                        @php
+                                            $totalPercentage = $detail->caseSubtitles->sum('percentage');
+                                            $totalSubtitleCount = $detail->caseSubtitles->count();
+                                            $totalPercentageDone =
+                                                $totalSubtitleCount > 0
+                                                    ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2)
+                                                    : 0;
+                                        @endphp
+                                        <tr>
+                                            <td style="background-color: #ffffff; color: #000000; width: 150px;">
+                                                #{{ $index++ }}</td>
+                                            <td style="background-color: #ffffff; color: #000000; width: 150px;">
+                                                {{ $detail->trainee->trainee_number }}</td>
+                                            <td style="background-color: #ffffff; color: #000000; width: 250px;">
+                                                {{ $detail->trainee->name }}</td>
+                                            @foreach ($detail->caseSubtitles as $subtitle)
+                                                @php
+                                                    $percentage = $subtitle->percentage;
+                                                    $bgColor = '';
+                                                    $fontColor = '';
+                                                    if ($percentage == '0') {
+                                                        $bgColor = '#ffffff';
+                                                        $fontColor = '#000000';
+                                                    } elseif ($percentage == '25') {
+                                                        $bgColor = '#ff0000';
+                                                        $fontColor = '#ffffff';
+                                                    } elseif ($percentage == '50') {
+                                                        $bgColor = '#ffff00';
+                                                        $fontColor = '#000000';
+                                                    } elseif ($percentage == '75') {
+                                                        $bgColor = '#0000ff';
+                                                        $fontColor = '#ffffff';
+                                                    } elseif ($percentage == '100') {
+                                                        $bgColor = '#00ff00';
+                                                        $fontColor = '#000000';
+                                                    }
+                                                @endphp
+                                                <td
+                                                    style="background-color: {{ $bgColor }}; color: {{ $fontColor }}; text-align: center; font-weight: bold; width: 150px;">
+                                                    {{ $percentage }}%
+                                                </td>
+                                            @endforeach
+                                            <td>{{ $totalPercentageDone }}%</td>
+                                        </tr>
                                     @endforeach
-                                    <td>{{ $totalPercentageDone }}%</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
     @endsection
 
     <script>

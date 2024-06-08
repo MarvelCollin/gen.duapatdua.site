@@ -36,7 +36,7 @@ class ForumController extends Controller
 
     public function shuffle(Request $request)
     {
-        if (!Hash::check($request->password, bcrypt('ciumdulu'))) {
+        if (!Hash::check($request->password, bcrypt('242gacor'))) {
             return redirect()->back()->with('error', 'Incorrect password.');
         }
         $trainees = Trainee::all();

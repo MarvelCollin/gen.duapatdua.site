@@ -123,11 +123,8 @@
                             </div>
                         </div>
                     @endforeach
-
                 </div>
             </div>
-
-
         </div>
 
         <div class="modal fade" id="newforumModal" tabindex="-1" role="dialog" aria-labelledby="newforumModalLabel"

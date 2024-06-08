@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="d-flex text-center justify-content-between align-items-center mt-3">
                                     <a href="{{ route('casesolve.show', $caseSolve->id) }}" class="btn btn-primary">View
-                                        Progress</a>
+                                        Details</a>
                                     <button class="btn btn-primary editCaseSolveBtn" data-toggle="modal"
                                         data-target="#editCaseSolveModal_{{ $caseSolve->id }}">Edit Case Solve</button>
                                 </div>
@@ -102,6 +102,7 @@
                                                     <div class="form-group">
                                                         <label for="subtitles">Subtitles:</label>
                                                         <div id="subtitle-container-edit-{{ $caseSolve->id }}">
+                                                            <!-- Subtitles for this case solve ID will be appended here -->
                                                             @if ($caseSolveDetails)
                                                                 @foreach ($caseSolveDetails as $caseSolveDetail)
                                                                     @foreach ($caseSubtitles->unique('subtitle') as $subtitle)

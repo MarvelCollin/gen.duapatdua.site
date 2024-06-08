@@ -19,7 +19,7 @@ class AuthController extends Controller
 
         $password = $request->input('password');
 
-        if ($password === '242lulussemua') {
+        if ($password === '242gacor') {
             session(['authenticated' => true]);
             return redirect()->route('home')->with('success', 'Login successful!');
         }
