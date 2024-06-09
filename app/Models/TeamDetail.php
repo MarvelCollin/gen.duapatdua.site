@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TeamDetail extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     
     public function team()
     {

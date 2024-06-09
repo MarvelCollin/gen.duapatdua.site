@@ -31,7 +31,7 @@
                     <a class="nav-link" href="{{ route('casesolve.index') }}">Case Solving</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">BP Project</a>
+                    <a class="nav-link" href="{{ route('bpprojects.index') }}">BP Project</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href={{ route('showForum') }}>Forum</a>

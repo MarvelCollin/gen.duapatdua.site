@@ -6,6 +6,7 @@ use App\Http\Controllers\TraineeController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\BpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,4 +43,10 @@ Route::middleware(['check.password'])->group(function () {
 
     Route::resource('trainee', TraineeController::class);
     Route::get('/trainee-quiz', [QuizController::class, 'showTraineeQuiz'])->name('showTraineeQuiz');
+
+    Route::get('/bp', [BpController::class, 'index'])->name('bpprojects.index');
+    Route::get('/bpprojects/{id}', [BpController::class, 'show'])->name('bpprojects.show');
+    Route::post('/bpprojects', [BpController::class, 'store'])->name('bpprojects.store');
+    Route::put('/bpprojects/{id}', [BpController::class, 'update'])->name('bpprojects.update');
+    Route::delete('/bpprojects/{id}', [BpController::class, 'destroy'])->name('bpprojects.destroy');
 });
