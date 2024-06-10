@@ -7,6 +7,8 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
+use App\Http\Controllers\TeamController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,5 +50,17 @@ Route::middleware(['check.password'])->group(function () {
     Route::get('/bpprojects/{id}', [BpController::class, 'show'])->name('bpprojects.show');
     Route::post('/bpprojects', [BpController::class, 'store'])->name('bpprojects.store');
     Route::put('/bpprojects/{id}', [BpController::class, 'update'])->name('bpprojects.update');
+    Route::put('/bpprojects/{id}/edit', [BpController::class, 'edit'])->name('bpprojects.edit');
     Route::delete('/bpprojects/{id}', [BpController::class, 'destroy'])->name('bpprojects.destroy');
+    
+    Route::get('/bpprojectTeams', [TeamController::class, 'index'])->name('bpprojectTeams.index');
+    Route::get('/bpprojectTeams/{bpprojectTeam}/edit', [TeamController::class, 'edit'])->name('bpprojectTeams.edit');
+    Route::put('/bpprojectTeams/{bpprojectTeam}', [TeamController::class, 'update'])->name('bpprojectTeams.update');
+
+    Route::put('/bpprojectteams/{id}', [TeamController::class, 'updateBpprojectTeam'])->name('bpprojectteams.update');
+    Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::get('/teams/{id}', [TeamController::class, 'show'])->name('teams.show');
+    Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
+    Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
 });

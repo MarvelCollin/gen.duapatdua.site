@@ -15,8 +15,14 @@ class Team extends Model
         return $this->hasMany(BpprojectDetail::class);
     }
 
-    public function teamDetails()
+    public function subtitles()
     {
-        return $this->hasMany(TeamDetail::class);
+        return $this->hasMany(BpprojectSubtitle::class, 'team_id');
     }
+
+    public function bpprojectTeams()
+{
+    return $this->hasMany(BpprojectTeam::class);
+}
+
 }

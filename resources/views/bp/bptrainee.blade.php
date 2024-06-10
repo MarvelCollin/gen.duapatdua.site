@@ -11,30 +11,33 @@
 
 @section('content')
     <div class="container text-center">
-        <h1 class="mb-4">{{ $caseSolve->title }}</h1>
-        <p class="mb-2">Subject: {{ $caseSolve->subject }}</p>
-        <p class="mb-5">Session: {{ $caseSolve->session }}</p>
+        <h1 class="mb-4">{{ $bpproject->bptitle }}</h1>
+        <p class="mb-2">Subject: {{ $bpproject->subject }}</p>
+        <p class="mb-5">{{ $bpproject->bpnotes }}</p>
         <div class="mb-5">
-            <a class="btn btn-secondary" href="{{ route('casesolve.index') }}">
+            <a class="btn btn-secondary" href="{{ route('bpprojects.index') }}">
                 Back
             </a>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#leaderboardModal">
                 View Progress Angkatan
             </button>
+            <a class="btn btn-primary" href="{{ route('teams.index') }}">
+                View Overall Progress
+            </a>
         </div>
         @php
-            $sortedDetails = $caseSolveDetails->sortBy(function ($detail) {
+            $sortedDetails = $bpprojectDetails->sortBy(function ($detail) {
                 preg_match('/T0(\d+)/', $detail->trainee->trainee_number, $matches);
                 return (int) $matches[1];
             });
         @endphp
 
-s
+
         <div class="row">
             @foreach ($sortedDetails as $detail)
                 @php
-                    $totalPercentage = $detail->caseSubtitles->sum('percentage');
-                    $totalSubtitleCount = $detail->caseSubtitles->count();
+                    $totalPercentage = $detail->subtitles->sum('percentage');
+                    $totalSubtitleCount = $detail->subtitles->count();
                     $totalPercentageDone =
                         $totalSubtitleCount > 0 ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2) : 0;
                 @endphp
@@ -67,14 +70,14 @@ s
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="{{ route('casesolve.edit', $caseSolve->id) }}" method="POST">
+                            <form action="{{ route('bpprojects.edit', $bpproject->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
                                 <input type="hidden" name="trainee_id" value="{{ $detail->trainee->id }}">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h5>Subtitle</h5>
-                                        @foreach ($detail->caseSubtitles as $subtitle)
+                                        @foreach ($detail->subtitles as $subtitle)
                                             <div class="form-group">
                                                 <input type="text" class="form-control mb-2"
                                                     id="subtitle_{{ $subtitle->id }}"
@@ -85,7 +88,7 @@ s
                                     </div>
                                     <div class="col-md-6">
                                         <h5>Progress</h5>
-                                        @foreach ($detail->caseSubtitles as $subtitle)
+                                        @foreach ($detail->subtitles as $subtitle)
                                             <div class="form-group">
                                                 <select class="form-control mb-2" id="progress_{{ $subtitle->id }}"
                                                     name="subtitles[{{ $subtitle->id }}][percentage]">
@@ -131,7 +134,7 @@ s
                                         <th>Ranks</th>
                                         <th>Trainee</th>
                                         <th class="pr-2">Name</th>
-                                        @foreach ($detail->caseSubtitles as $subtitle)
+                                        @foreach ($detail->subtitles as $subtitle)
                                             <th>{{ $subtitle->subtitle }}</th>
                                         @endforeach
                                         <th class="pr-2">Progress</th>
@@ -141,15 +144,15 @@ s
 
                                     @php
                                         $sortedDetails = $sortedDetails->sortByDesc(function ($detail) {
-                                            return $detail->caseSubtitles->sum('percentage');
+                                            return $detail->subtitles->sum('percentage');
                                         });
 
                                         $index = 1;
                                     @endphp
                                     @foreach ($sortedDetails as $key => $detail)
                                         @php
-                                            $totalPercentage = $detail->caseSubtitles->sum('percentage');
-                                            $totalSubtitleCount = $detail->caseSubtitles->count();
+                                            $totalPercentage = $detail->subtitles->sum('percentage');
+                                            $totalSubtitleCount = $detail->subtitles->count();
                                             $totalPercentageDone =
                                                 $totalSubtitleCount > 0
                                                     ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2)
@@ -162,7 +165,7 @@ s
                                                 {{ $detail->trainee->trainee_number }}</td>
                                             <td style="background-color: #ffffff; color: #000000; width: 250px;">
                                                 {{ $detail->trainee->name }}</td>
-                                            @foreach ($detail->caseSubtitles as $subtitle)
+                                            @foreach ($detail->subtitles as $subtitle)
                                                 @php
                                                     $percentage = $subtitle->percentage;
                                                     $bgColor = '';

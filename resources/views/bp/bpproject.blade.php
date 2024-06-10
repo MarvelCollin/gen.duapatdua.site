@@ -28,7 +28,8 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <p class="card-text">Name: {{ $bpproject->bptitle }}</p>
-                                        <p class="card-text">Date: {{ $bpproject->created_at->format('d F Y') }}</p>
+                                        <p class="card-text">Notes: {{ $bpproject->bpnotes }}</p>
+                                        <p class="card-text">{{ $bpproject->created_at->format('d F Y') }}</p>
                                     </div>
                                 </div>
                                 <div class="d-flex text-center justify-content-between align-items-center mt-3">
@@ -76,7 +77,13 @@
                                                         <option value="Python">Python</option>
                                                     </select>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="bpnotes">Notes:</label>
+                                                    <input type="text" id="bpnotes" name="bpnotes" class="form-control"
+                                                        required value="{{ $bpproject->bpnotes }}">
+                                                </div>
                                             </div>
+                                            
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -84,17 +91,19 @@
                                                     <div id="subtitle-container-edit-{{ $bpproject->id }}">
                                                         @if ($bpprojectDetails)
                                                             @foreach ($bpprojectDetails as $bpprojectDetail)
-                                                                @if ($bpprojectDetail->bpproject_id == $bpproject->id)
-                                                                <div class="input-group mb-2">
-                                                                    <input type="text" name="subtitles[]"
-                                                                    class="form-control"
-                                                                    value="{{ $bpprojectDetail->title }}">
-                                                                    <div class="input-group-append">
-                                                                        <button type="button"
-                                                                        class="btn btn-danger remove-subtitle">Remove</button>
-                                                                    </div>
-                                                                </div>
-                                                                @endif
+                                                                @foreach ($bpprojectSubtitles->unique('subtitle') as $subtitle)
+                                                                    @if ($bpprojectDetail->bpproject_id == $bpproject->id && $subtitle->bpproject_detail_id == $bpprojectDetail->id)
+                                                                        <div class="input-group mb-2">
+                                                                            <input type="text" name="subtitles[]"
+                                                                                class="form-control"
+                                                                                value="{{ $subtitle->subtitle }}">
+                                                                            <div class="input-group-append">
+                                                                                <button type="button"
+                                                                                    class="btn btn-danger remove-subtitle">Remove</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                @endforeach
                                                             @endforeach
                                                         @endif
 
@@ -135,7 +144,7 @@
                                         <input type="text" id="bptitle" name="bptitle" class="form-control"
                                             required>
                                     </div>
-
+                                    
                                     <div class="form-group">
                                         <label for="subject">Subject:</label>
                                         <select id="subject" name="subject" class="form-control" required>
@@ -147,6 +156,11 @@
                                             <option value="Networking">Networking</option>
                                             <option value="Python">Python</option>
                                         </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bpnotes">Notes:</label>
+                                        <input type="text" id="bpnotes" name="bpnotes" class="form-control"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

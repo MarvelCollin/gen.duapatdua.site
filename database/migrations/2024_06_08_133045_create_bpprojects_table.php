@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string("subject");
             $table->string("bptitle");
+            $table->string("bpnotes");
             $table->timestamps();
         });
     }

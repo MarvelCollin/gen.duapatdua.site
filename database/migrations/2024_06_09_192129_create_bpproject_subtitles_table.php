@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('teams', function (Blueprint $table) {
+        Schema::create('bpproject_subtitles', function (Blueprint $table) {
             $table->id();
-            $table->string("team_name");
-            $table->string("head_trainee");
-            $table->string("trainees");
+            $table->foreignId('bpproject_detail_id')->constrained('bpproject_details')->onDelete('cascade');
+            $table->string('subtitle');
+            $table->string('percentage');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teams');
+        Schema::dropIfExists('bpproject_subtitles');
     }
 };

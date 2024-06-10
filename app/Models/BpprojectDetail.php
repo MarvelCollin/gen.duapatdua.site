@@ -19,4 +19,14 @@ class BpprojectDetail extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function trainee()
+    {
+        return $this->belongsTo(Trainee::class);
+    }
+
+    public function subtitles()
+    {
+        return $this->hasMany(BpprojectSubtitle::class);
+    }
 }

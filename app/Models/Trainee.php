@@ -15,4 +15,9 @@ class Trainee extends Model
     {
         return $this->hasMany(CaseSolveDetail::class);
     }
+
+    public function bpprojectDetails()
+    {
+        return $this->hasMany(BpprojectDetail::class);
+    }
 }
