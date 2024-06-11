@@ -29,18 +29,18 @@ class RundownController extends Controller
             'day' => $request->day,
         ]);
     
-        $starts = is_array($request->start) ? $request->start : [$request->start];
-        $ends = is_array($request->end) ? $request->end : [$request->end];
-        $activities = is_array($request->activity) ? $request->activity : [$request->activity];
+        // $starts = is_array($request->start) ? $request->start : [$request->start];
+        // $ends = is_array($request->end) ? $request->end : [$request->end];
+        // $activities = is_array($request->activity) ? $request->activity : [$request->activity];
     
-        foreach ($starts as $key => $start) {
-            RundownDetail::create([
-                'rundown_id' => $rundown->id,
-                'start' => $starts[$key],
-                'end' => $ends[$key],
-                'activity' => $activities[$key],
-            ]);
-        }
+        // foreach ($starts as $key => $start) {
+        //     RundownDetail::create([
+        //         'rundown_id' => $rundown->id,
+        //         'start' => $starts[$key],
+        //         'end' => $ends[$key],
+        //         'activity' => $activities[$key],
+        //     ]);
+        // }
     
         return redirect()->back()->with('success', 'Rundown created successfully.');
     }

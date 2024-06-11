@@ -19,33 +19,28 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
+                <li class="nav-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('home') }}">Home</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{ Route::currentRouteName() == 'trainee.index' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('trainee.index') }}">Trainee List</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{ Route::currentRouteName() == 'trainer.index' ? 'active' : '' }}">
                     <a class="nav-link" href="#">Trainer List</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{ Route::currentRouteName() == 'casesolve.index' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('casesolve.index') }}">Case Solving</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{ Route::currentRouteName() == 'bpprojects.index' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('bpprojects.index') }}">BP Project</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href={{ route('showForum') }}>Forum</a>
+                <li class="nav-item {{ Route::currentRouteName() == 'showForum' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('showForum') }}">Forum</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Presentation</a>
-                </li>
-                <li class="nav-item">
+                <li class="nav-item {{ Route::currentRouteName() == 'acquaintance.index' ? 'active' : '' }}">
                     <a class="nav-link" href="#">Acquaintance</a>
                 </li>
             </ul>
-            
-        </ul>
         <ul class="navbar-nav navbar-nav-no-margin">
             <a class="nav-link" id="typed-text" style="color:white !important;"></a>
         </ul>
