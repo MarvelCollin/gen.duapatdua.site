@@ -9,7 +9,6 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
 use App\Http\Controllers\TeamController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,20 +46,19 @@ Route::middleware(['check.password'])->group(function () {
     Route::get('/trainee-quiz', [QuizController::class, 'showTraineeQuiz'])->name('showTraineeQuiz');
 
     Route::get('/bp', [BpController::class, 'index'])->name('bpprojects.index');
-    Route::get('/bpprojects/{id}', [BpController::class, 'show'])->name('bpprojects.show');
-    Route::post('/bpprojects', [BpController::class, 'store'])->name('bpprojects.store');
-    Route::put('/bpprojects/{id}', [BpController::class, 'update'])->name('bpprojects.update');
-    Route::put('/bpprojects/{id}/edit', [BpController::class, 'edit'])->name('bpprojects.edit');
-    Route::delete('/bpprojects/{id}', [BpController::class, 'destroy'])->name('bpprojects.destroy');
-    
-    Route::get('/bpprojectTeams', [TeamController::class, 'index'])->name('bpprojectTeams.index');
-    Route::get('/bpprojectTeams/{bpprojectTeam}/edit', [TeamController::class, 'edit'])->name('bpprojectTeams.edit');
-    Route::put('/bpprojectTeams/{bpprojectTeam}', [TeamController::class, 'update'])->name('bpprojectTeams.update');
+    Route::get('/bp/{id}', [BpController::class, 'show'])->name('bpprojects.show');
+    Route::post('/bp', [BpController::class, 'store'])->name('bpprojects.store');
+    Route::put('/bp/{id}', [BpController::class, 'update'])->name('bpprojects.update');
+    Route::put('/bp/{id}/edit', [BpController::class, 'edit'])->name('bpprojects.edit');
+    Route::delete('/bp/{id}', [BpController::class, 'destroy'])->name('bpprojects.destroy');
 
-    Route::put('/bpprojectteams/{id}', [TeamController::class, 'updateBpprojectTeam'])->name('bpprojectteams.update');
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
-    Route::get('/teams/{id}', [TeamController::class, 'show'])->name('teams.show');
-    Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
     Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
+    Route::get('/teams/{team}/edit', [TeamController::class, 'edit'])->name('teams.edit');
     Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
+    Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+
+    Route::get('/bpproject/{id}/details', [BpController::class, 'showDetails'])->name('bpproject.details');
+    Route::put('/bpprojectTeams/{id}', [BpController::class, 'updateSubtitle'])->name('bpprojectTeams.update');
 });

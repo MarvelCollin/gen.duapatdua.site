@@ -9,6 +9,7 @@
                     <div class="d-flex justify-content-end align-items-center">
                         <button class="btn btn-primary mr-3" id="newBpprojectBtn" data-toggle="modal"
                             data-target="#newBpprojectModal">New BP Project</button>
+                        <button class="btn btn-primary mr-3" data-toggle="modal" data-target="#teamModal">Teams</button>
                         <div class="search-container">
                             <input type="text" id="searchInput" class="form-control" placeholder="Search...">
                             <i class="fas fa-search search-icon"></i>
@@ -83,7 +84,6 @@
                                                         required value="{{ $bpproject->bpnotes }}">
                                                 </div>
                                             </div>
-                                            
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -144,7 +144,7 @@
                                         <input type="text" id="bptitle" name="bptitle" class="form-control"
                                             required>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label for="subject">Subject:</label>
                                         <select id="subject" name="subject" class="form-control" required>
@@ -187,47 +187,138 @@
             </div>
         </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('add-subtitle').addEventListener('click', function() {
-                    const newInputGroup = createInputGroup();
-                    document.getElementById('subtitle-container').appendChild(newInputGroup);
-                });
+        <div class="modal fade" id="teamModal" tabindex="-1" role="dialog" aria-labelledby="teamModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="teamModalLabel">Teams</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            @foreach ($teams as $team)
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $team->team_name }}</h5>
+                                            <p class="card-text"><strong>Head Trainee:</strong> {{ $team->head_trainee }}
+                                            </p>
+                                            <p class="card-text"><strong>Trainees:</strong> {{ $team->trainees }}</p>
+                                            <div class="d-flex justify-content-between">
+                                                <div class="">
+                                                    <button class="btn btn-warning" data-toggle="modal"
+                                                        data-target="#editTeamModal_{{ $team->id }}">Edit</button>
+                                                </div>
+                                                <form action="{{ route('teams.destroy', $team->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                document.querySelectorAll('.add-subtitle-edit').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const bpprojectId = button.dataset.bpprojectid;
-                        const subtitleContainer = document.getElementById(
-                            `subtitle-container-edit-${bpprojectId}`);
-                        const newInputGroup = createInputGroup();
-                        subtitleContainer.appendChild(newInputGroup);
-                    });
-                });
+                                <div class="modal fade" id="editTeamModal_{{ $team->id }}" tabindex="-1"
+                                    role="dialog" aria-labelledby="editTeamModalLabel_{{ $team->id }}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editTeamModalLabel_{{ $team->id }}">Edit
+                                                    Team</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form action="{{ route('teams.update', $team->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="team_name_{{ $team->id }}">Team Name</label>
+                                                        <input type="text" class="form-control"
+                                                            id="team_name_{{ $team->id }}" name="team_name"
+                                                            value="{{ $team->team_name }}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="head_trainee_{{ $team->id }}">Head Trainee</label>
+                                                        <input type="text" class="form-control"
+                                                            id="head_trainee_{{ $team->id }}" name="head_trainee"
+                                                            value="{{ $team->head_trainee }}" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="trainees_{{ $team->id }}">Trainees</label>
+                                                        <textarea class="form-control" id="trainees_{{ $team->id }}" name="trainees" required>{{ $team->trainees }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#createTeamModal">Create Team</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="createTeamModal" tabindex="-1" role="dialog"
+            aria-labelledby="createTeamModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createTeamModalLabel">Create Team</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('teams.store') }}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="team_name">Team Name</label>
+                                <input type="text" class="form-control" id="team_name" name="team_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="head_trainee">Head Trainee</label>
+                                <input type="text" class="form-control" id="head_trainee" name="head_trainee"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trainees">Trainees</label>
+                                <textarea class="form-control" id="trainees" name="trainees" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create Team</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
-                document.querySelectorAll('.remove-subtitle').forEach(button => {
-                    button.addEventListener('click', function() {
-                        button.closest('.input-group').remove();
-                    });
-                });
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-                const searchInput = document.getElementById('searchInput');
-                const bpprojectsContainer = document.getElementById('bpprojects');
-
-                function filterBpprojects() {
-                    const searchValue = searchInput.value.trim().toLowerCase();
-                    const bpprojects = document.querySelectorAll('.card');
-
-                    bpprojects.forEach(bpproject => {
-                        const title = bpproject.querySelector('.card-title').textContent.toLowerCase();
-                        if (title.includes(searchValue)) {
-                            bpproject.style.display = '';
-                        } else {
-                            bpproject.style.display = 'none';
-                        }
-                    });
-                }
-
-                searchInput.addEventListener('input', filterBpprojects);
+            document.getElementById('add-subtitle').addEventListener('click', function() {
+                const newInputGroup = createInputGroup();
+                document.getElementById('subtitle-container').appendChild(newInputGroup);
             });
 
             function createInputGroup() {
@@ -258,5 +349,12 @@
 
                 return newInputGroup;
             }
-        </script>
-    @endsection
+
+            document.querySelectorAll('.remove-subtitle').forEach(button => {
+                button.addEventListener('click', function() {
+                    button.closest('.input-group').remove();
+                });
+            });
+        });
+    </script>
+@endsection

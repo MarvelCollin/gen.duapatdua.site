@@ -8,6 +8,7 @@ use App\Models\Trainee;
 use App\Models\BpprojectSubtitle;
 use App\Models\BpprojectDetail;
 use App\Models\BpprojectTeam;
+use App\Models\Team;
 
 class BpController extends Controller
 {
@@ -16,8 +17,11 @@ class BpController extends Controller
         $bpprojects = Bpproject::all();
         $bpprojectSubtitles = BpprojectSubtitle::all();
         $bpprojectDetails = BpprojectDetail::all();
-        return view('bp.bpproject', compact('bpprojects', 'bpprojectSubtitles', 'bpprojectDetails'));
+        $bpprojectTeams = BpprojectTeam::all();
+        $teams = Team::all();
+        return view('bp.bpproject', compact('bpprojects', 'bpprojectSubtitles', 'bpprojectDetails', 'bpprojectTeams', 'teams'));
     }
+
 
     public function create()
     {
@@ -46,14 +50,15 @@ class BpController extends Controller
                 BpprojectSubtitle::create([
                     'bpproject_detail_id' => $bpprojectDetail->id,
                     'subtitle' => $subtitle,
-                    'percentage' => '0'
+                    'percentage' => '0',
                 ]);
 
                 BpprojectTeam::create([
-                    'bpproject_detail_id' => $bpprojectDetail->id,
+                    'bpproject_id' => $bpproject->id,
                     'subtitle' => $subtitle,
                     'percentage' => '0',
                     'team_id' => null,
+                    'external_trainee' => ' ',
                     'notes' => '-'
                 ]);
             }
@@ -127,5 +132,33 @@ class BpController extends Controller
         }
 
         return redirect()->route('bpprojects.index')->with('success', 'BP Project updated successfully!');
+    }
+
+    public function showDetails($id)
+    {
+        $teams = Team::all();
+        $bpProject = BpProject::findOrFail($id);
+        $bpProjectTeams = BpProjectTeam::where('bpproject_id', $id)->get();
+        return view('bp.bpteams', compact('teams', 'bpProject', 'bpProjectTeams'));
+    }
+
+    public function updateSubtitle(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'percentage' => 'required|string|in:0,25,50,75,100',
+            'external_trainee' => 'nullable|string|max:255',
+            'team_id' => 'nullable|exists:teams,id',
+        ]);
+
+        $projectTeam = BpprojectTeam::findOrFail($id);
+
+        $projectTeam->update([
+            'percentage' => $validatedData['percentage'],
+            'external_trainee' => $validatedData['external_trainee'],
+            'team_id' => $validatedData['team_id'],
+            'notes' =>$request->notes
+        ]);
+
+        return redirect()->back()->with('success', 'Project team updated successfully!');
     }
 }

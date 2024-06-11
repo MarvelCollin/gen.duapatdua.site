@@ -13,14 +13,7 @@ class TeamController extends Controller
     {
         $teams = Team::with('bpprojectTeams.bpprojectDetail')->get();
         $bpprojectTeams = BpprojectTeam::all();
-        return view('bp.bpteam', compact('teams', 'bpprojectTeams'));
-    }
-
-    public function show($id)
-    {
-        $team = Team::with('bpprojectTeams.bpprojectDetail')->findOrFail($id);
-
-        return view('bp.bpteam', compact('team'));
+        return view('bp.bpproject', compact('teams', 'bpprojectTeams'));
     }
 
     public function create()
@@ -32,36 +25,51 @@ class TeamController extends Controller
     {
         $team = Team::create($request->all());
 
-        return redirect()->route('teams.index')->with('success', 'Team created successfully!');
+        return redirect()->back();  
     }
 
     public function edit($id)
     {
         $team = Team::with('bpprojectTeams.bpprojectDetail')->findOrFail($id);
 
-        return view('bp.editeam', compact('team'));
+        return redirect()->back();  
+
     }
 
     public function update(Request $request, $id)
-    {
-        $team = Team::findOrFail($id);
-        $team->update($request->all());
+{
+    $validatedData = $request->validate([
+        'team_name' => 'required|string|max:255',
+        'head_trainee' => 'required|string|max:255',
+        'trainees' => 'required|string',
+        'bpprojectTeams' => 'nullable|array', 
+        'bpprojectTeams.*.project_team_id' => 'required|exists:bpproject_teams,id', 
+        'bpprojectTeams.*.some_field' => 'required|string', 
+    ]);
 
-        foreach ($request->bpprojectTeams as $projectTeamId => $projectTeamData) {
+    $team = Team::findOrFail($id);
+
+    $team->update($validatedData);
+
+    if (!empty($validatedData['bpprojectTeams'])) {
+        foreach ($validatedData['bpprojectTeams'] as $projectTeamId => $projectTeamData) {
             $projectTeam = BpprojectTeam::findOrFail($projectTeamId);
+
             $projectTeam->update($projectTeamData);
         }
-
-        return redirect()->route('teams.show', $id)->with('success', 'Team updated successfully!');
     }
 
-    public function updateBpprojectTeam(Request $request, $id)
-    {
-        $bpprojectTeam = BpprojectTeam::findOrFail($id);
-        $bpprojectTeam->update([
-            'notes' => $request->notes,
-        ]);
-
-        return redirect()->back()->with('success', 'Bpproject Team updated successfully!');
-    }
+    return redirect()->back();
 }
+
+
+    public function destroy($id)
+    {
+        $team = Team::findOrFail($id);
+        $team->delete();
+
+        return redirect()->back();  
+
+     }
+}
+

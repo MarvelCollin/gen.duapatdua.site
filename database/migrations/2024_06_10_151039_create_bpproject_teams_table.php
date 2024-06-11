@@ -15,15 +15,16 @@ return new class extends Migration
     {
         Schema::create('bpproject_teams', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bpproject_detail_id')->constrained('bpproject_details')->onDelete('cascade');
+            $table->foreignId('bpproject_id')->constrained('bpprojects')->onDelete('cascade');
             $table->string('subtitle');
             $table->string('percentage');
             $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('cascade');
             $table->longText('notes');
+            $table->string('external_trainee')->nullable();
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *

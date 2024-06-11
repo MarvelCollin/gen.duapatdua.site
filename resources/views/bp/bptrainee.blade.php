@@ -1,4 +1,5 @@
 @extends('components.navbar')
+
 <style>
     .card {
         transition: box-shadow 0.3s ease-in-out;
@@ -18,12 +19,10 @@
             <a class="btn btn-secondary" href="{{ route('bpprojects.index') }}">
                 Back
             </a>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#leaderboardModal">
-                View Progress Angkatan
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#overallProgressModal">
+                View Leaderboard
             </button>
-            <a class="btn btn-primary" href="{{ route('teams.index') }}">
-                View Overall Progress
-            </a>
+            <a href="{{ route('bpproject.details', $bpproject->id) }}" class="btn btn-info">View Project Details</a>
         </div>
         @php
             $sortedDetails = $bpprojectDetails->sortBy(function ($detail) {
@@ -31,7 +30,6 @@
                 return (int) $matches[1];
             });
         @endphp
-
 
         <div class="row">
             @foreach ($sortedDetails as $detail)
@@ -54,8 +52,6 @@
                 </div>
             @endforeach
         </div>
-
-
 
         @foreach ($sortedDetails as $detail)
             <div class="modal fade" id="subtitleModal{{ $detail->id }}" tabindex="-1" role="dialog"
@@ -99,113 +95,107 @@
                                                     <option value="50"
                                                         {{ $subtitle->percentage == '50' ? 'selected' : '' }}>50%</option>
                                                     <option value="75"
-                                                        {{ $subtitle->percentage == '75' ? 'selected' : '' }}>75%</option>
-                                                    <option value="100"
-                                                        {{ $subtitle->percentage == '100' ? 'selected' : '' }}>100%
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-
-        <div class="modal fade" id="leaderboardModal" tabindex="-1" role="dialog" aria-labelledby="leaderboardModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="leaderboardModalLabel">Progress Angkatan</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class="text-center">
-                                    <tr>
-                                        <th>Ranks</th>
-                                        <th>Trainee</th>
-                                        <th class="pr-2">Name</th>
-                                        @foreach ($detail->subtitles as $subtitle)
-                                            <th>{{ $subtitle->subtitle }}</th>
-                                        @endforeach
-                                        <th class="pr-2">Progress</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-center">
-
-                                    @php
-                                        $sortedDetails = $sortedDetails->sortByDesc(function ($detail) {
-                                            return $detail->subtitles->sum('percentage');
-                                        });
-
-                                        $index = 1;
-                                    @endphp
-                                    @foreach ($sortedDetails as $key => $detail)
-                                        @php
-                                            $totalPercentage = $detail->subtitles->sum('percentage');
-                                            $totalSubtitleCount = $detail->subtitles->count();
-                                            $totalPercentageDone =
-                                                $totalSubtitleCount > 0
-                                                    ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2)
-                                                    : 0;
-                                        @endphp
-                                        <tr>
-                                            <td style="background-color: #ffffff; color: #000000; width: 150px;">
-                                                #{{ $index++ }}</td>
-                                            <td style="background-color: #ffffff; color: #000000; width: 150px;">
-                                                {{ $detail->trainee->trainee_number }}</td>
-                                            <td style="background-color: #ffffff; color: #000000; width: 250px;">
-                                                {{ $detail->trainee->name }}</td>
-                                            @foreach ($detail->subtitles as $subtitle)
-                                                @php
-                                                    $percentage = $subtitle->percentage;
-                                                    $bgColor = '';
-                                                    $fontColor = '';
-                                                    if ($percentage == '0') {
-                                                        $bgColor = '#ffffff';
-                                                        $fontColor = '#000000';
-                                                    } elseif ($percentage == '25') {
-                                                        $bgColor = '#ff0000';
-                                                        $fontColor = '#ffffff';
-                                                    } elseif ($percentage == '50') {
-                                                        $bgColor = '#ffff00';
-                                                        $fontColor = '#000000';
-                                                    } elseif ($percentage == '75') {
-                                                        $bgColor = '#0000ff';
-                                                        $fontColor = '#ffffff';
-                                                    } elseif ($percentage == '100') {
-                                                        $bgColor = '#00ff00';
-                                                        $fontColor = '#000000';
-                                                    }
-                                                @endphp
-                                                <td
-                                                    style="background-color: {{ $bgColor }}; color: {{ $fontColor }}; text-align: center; font-weight: bold; width: 150px;">
-                                                    {{ $percentage }}%
-                                                </td>
-                                            @endforeach
-                                            <td>{{ $totalPercentageDone }}%</td>
-                                        </tr>
+                                                    {{ $subtitle->percentage == '75' ? 'selected' : '' }}>75%</option>
+                                                <option value="100"
+                                                    {{ $subtitle->percentage == '100' ? 'selected' : '' }}>100%
+                                                </option>
+                                            </select>
+                                        </div>
                                     @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    @endsection
+    @endforeach
 
-    <script>
-        function openModal(id) {
-            $('#subtitleModal' + id).modal('show');
-        }
-    </script>
+    <div class="modal fade" id="overallProgressModal" tabindex="-1" role="dialog"
+        aria-labelledby="overallProgressModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="overallProgressModalLabel">Overall Progress</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Trainee</th>
+                                    <th>Name</th>
+                                    @foreach ($detail->subtitles as $subtitle)
+                                        <th>{{ $subtitle->subtitle }}</th>
+                                    @endforeach
+                                    <th>Total Progress</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @php
+                                    $sortedDetails = $sortedDetails->sortByDesc(function ($detail) {
+                                        return $detail->subtitles->sum('percentage');
+                                    });
+                                    $index = 1;
+                                @endphp
+                                @foreach ($sortedDetails as $key => $detail)
+                                    @php
+                                        $totalPercentage = $detail->subtitles->sum('percentage');
+                                        $totalSubtitleCount = $detail->subtitles->count();
+                                        $totalPercentageDone =
+                                            $totalSubtitleCount > 0
+                                                ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2)
+                                                : 0;
+                                    @endphp
+                                    <tr>
+                                        <td>#{{ $index++ }}</td>
+                                        <td>{{ $detail->trainee->trainee_number }}</td>
+                                        <td>{{ $detail->trainee->name }}</td>
+                                        @foreach ($detail->subtitles as $subtitle)
+                                            @php
+                                                $percentage = $subtitle->percentage;
+                                                $bgColor = '';
+                                                $fontColor = '';
+                                                if ($percentage == '0') {
+                                                    $bgColor = '#ffffff';
+                                                    $fontColor = '#000000';
+                                                } elseif ($percentage == '25') {
+                                                    $bgColor = '#ff0000';
+                                                    $fontColor = '#ffffff';
+                                                } elseif ($percentage == '50') {
+                                                    $bgColor = '#ffff00';
+                                                    $fontColor = '#000000';
+                                                } elseif ($percentage == '75') {
+                                                    $bgColor = '#0000ff';
+                                                    $fontColor = '#ffffff';
+                                                } elseif ($percentage == '100') {
+                                                    $bgColor = '#00ff00';
+                                                    $fontColor = '#000000';
+                                                }
+                                            @endphp
+                                            <td style="background-color: {{ $bgColor }}; color: {{ $fontColor }};">
+                                                {{ $percentage }}%</td>
+                                        @endforeach
+                                        <td>{{ $totalPercentageDone }}%</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+<script>
+    function openModal(id) {
+        $('#subtitleModal' + id).modal('show');
+    }
+</script>
+
