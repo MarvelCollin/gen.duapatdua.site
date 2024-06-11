@@ -52,16 +52,18 @@ class BpController extends Controller
                     'subtitle' => $subtitle,
                     'percentage' => '0',
                 ]);
-
-                BpprojectTeam::create([
-                    'bpproject_id' => $bpproject->id,
-                    'subtitle' => $subtitle,
-                    'percentage' => '0',
-                    'team_id' => null,
-                    'external_trainee' => ' ',
-                    'notes' => '-'
-                ]);
             }
+        }
+
+        foreach ($subtitles as $subtitle) {
+            BpprojectTeam::create([
+                'bpproject_id' => $bpproject->id,
+                'subtitle' => $subtitle,
+                'percentage' => '0',
+                'team_id' => null,
+                'external_trainee' => ' ',
+                'notes' => '-'
+            ]);
         }
 
         return redirect()->route('bpprojects.index')->with('success', 'BP Project created successfully!');
@@ -156,7 +158,7 @@ class BpController extends Controller
             'percentage' => $validatedData['percentage'],
             'external_trainee' => $validatedData['external_trainee'],
             'team_id' => $validatedData['team_id'],
-            'notes' =>$request->notes
+            'notes' => $request->notes
         ]);
 
         return redirect()->back()->with('success', 'Project team updated successfully!');

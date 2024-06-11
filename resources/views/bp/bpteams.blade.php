@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container">
+        <a href="{{ route('bpprojects.index') }}" class="btn btn-danger mb-2 mt-2">Back</a>
         <div class="card mb-4">
             <div class="card-header">
                 <h1>{{ $bpProject->subject }}</h1>
@@ -107,7 +108,7 @@
                                 <div class="col-md-5">
                                     <input type="text" class="form-control" id="external_trainee_{{ $projectTeam->id }}"
                                         name="external_trainee" value="{{ $projectTeam->external_trainee }}"
-                                        placeholder="External Trainee">
+                                        placeholder="External Trainee (Format : T0XX)">
                                 </div>
                                 <div class="col-md-2">
                                     <select class="form-control" id="team_id_{{ $projectTeam->id }}" name="team_id">

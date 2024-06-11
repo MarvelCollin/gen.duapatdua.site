@@ -28,13 +28,12 @@
                                 <h5 class="card-title text-center">{{ $bpproject->subject }}</h5>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <p class="card-text">Name: {{ $bpproject->bptitle }}</p>
-                                        <p class="card-text">Notes: {{ $bpproject->bpnotes }}</p>
+                                        <p class="card-text">title: <strong>{{ $bpproject->bptitle }}</strong></p>
                                         <p class="card-text">{{ $bpproject->created_at->format('d F Y') }}</p>
                                     </div>
                                 </div>
                                 <div class="d-flex text-center justify-content-between align-items-center mt-3">
-                                    <a href="{{ route('bpprojects.show', $bpproject->id) }}" class="btn btn-primary">View
+                                    <a href="{{ route('bpprojects.show', $bpproject->id) }}" class="btn btn-success">View
                                         Progress</a>
                                     <button class="btn btn-primary editBpprojectBtn" data-toggle="modal"
                                         data-target="#editBpprojectModal_{{ $bpproject->id }}">Edit BP Project</button>
@@ -88,7 +87,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="subtitles">Subtitles:</label>
-                                                    <div id="subtitle-container-edit-{{ $bpproject->id }}">
+                                                    <div id="subtitle-container">
                                                         @if ($bpprojectDetails)
                                                             @foreach ($bpprojectDetails as $bpprojectDetail)
                                                                 @foreach ($bpprojectSubtitles->unique('subtitle') as $subtitle)
@@ -108,7 +107,7 @@
                                                         @endif
 
                                                     </div>
-                                                    <button type="button" class="btn btn-primary mt-2 add-subtitle-edit"
+                                                    <button type="button" class="btn btn-primary mt-2" id="add-subtitle"
                                                         data-bpprojectid="{{ $bpproject->id }}">Add New
                                                         Subtitle</button>
                                                 </div>
@@ -320,6 +319,7 @@
                 const newInputGroup = createInputGroup();
                 document.getElementById('subtitle-container').appendChild(newInputGroup);
             });
+            
 
             function createInputGroup() {
                 const newInputGroup = document.createElement('div');
