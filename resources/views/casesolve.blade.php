@@ -24,7 +24,7 @@
                 @foreach ($caseSolves->reverse() as $caseSolve)
                     @php
                         $createdTime = \Carbon\Carbon::parse($caseSolve->created_at);
-                        $expiredTime = now()->subMinutes(1);
+                        $expiredTime = now()->subHours(2);
                         $isActive = $createdTime->greaterThanOrEqualTo($expiredTime);
                     @endphp
                     <div class="col-md-4 mb-4">

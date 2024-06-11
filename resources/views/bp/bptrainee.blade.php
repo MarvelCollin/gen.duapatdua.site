@@ -1,5 +1,5 @@
 @extends('components.navbar')
-
+<title>Bp Details</title>
 <style>
     .card {
         transition: box-shadow 0.3s ease-in-out;

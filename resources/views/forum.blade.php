@@ -38,7 +38,8 @@
                         <a href="#" class="btn btn-primary mr-5" data-toggle="modal"
                             data-target="#shuffleForumsModal">Shuffle</a>
                         <div class="search-container">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                            <input type="text" id="searchInput" class="form-control"
+                                placeholder="Search by Trainee Number...">
                         </div>
                     </div>
                 </div>
@@ -59,7 +60,7 @@
                             <div class="card">
                                 <div class="card-body text-center animate__animated animate__fadeIn">
                                     <div class="d-flex text-center justify-content-between align-items-center">
-                                        <a class="card-text text-center ">{{ Str::limit($forum->link, 50) }}</a>
+                                        <a class="card-text text-center ">{{ $forum->link }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -74,9 +75,9 @@
                     <div class="col-md-4">
                         <label for="statusFilter">Show by Status:</label>
                         <select id="statusFilter" class="form-control">
+                            <option value="no" selected>No</option>
                             <option value="all">All</option>
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
                         </select>
                     </div>
                 </div>
@@ -91,34 +92,40 @@
                                 <div class="card-body ">
                                     <h5 class="card-title text-center">{{ $t->trainee_number }} - {{ $t->name }} |
                                         Total : {{ $t->totalForum }}</h5>
-                                        @foreach ($forums as $forum)
+                                    @foreach ($forums as $forum)
                                         @if ($t->id == $forum->trainee_id)
                                             <div class="forum-link-container mb-2" data-status="{{ $forum->forum_status }}">
                                                 <div class="d-flex flex-row align-items-start">
-                                                    <form method="POST" action="{{ route('updateForumStatus', $forum->id) }}" class="d-flex flex-row align-items-start">
+                                                    <form method="POST"
+                                                        action="{{ route('updateForumStatus', $forum->id) }}"
+                                                        class="d-flex flex-row align-items-start">
                                                         @csrf
                                                         @method('PATCH')
                                                         <div class="form-check mb-2">
-                                                            <input type="checkbox" class="form-check-input" name="forum_status"
-                                                                value="yes" id="forum-{{ $forum->id }}"
+                                                            <input type="checkbox" class="form-check-input"
+                                                                name="forum_status" value="yes"
+                                                                id="forum-{{ $forum->id }}"
                                                                 {{ $forum->forum_status == 'yes' ? 'checked' : '' }}
                                                                 onchange="this.form.submit()">
-                                                            <a href="{{ $forum->link }}" class="card-text d-inline">{{ $forum->link }}</a>
+                                                            <a href="{{ $forum->link }}"
+                                                                class="card-text d-inline">{{ $forum->link }}</a>
                                                         </div>
                                                     </form>
                                                     <div class="ml-auto">
-                                                        <form method="POST" action="{{ route('deleteForum', $forum->id) }}" class="delete-forum-form" onsubmit="return confirm('Are you sure you want to delete this forum?');">
+                                                        <form method="POST"
+                                                            action="{{ route('deleteForum', $forum->id) }}"
+                                                            class="delete-forum-form"
+                                                            onsubmit="return confirm('Are you sure you want to delete this forum?');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-link text-danger"><i class="fas fa-trash-alt"></i></button>
+                                                            <button type="submit" class="btn btn-link text-danger"><i
+                                                                    class="fas fa-trash-alt"></i></button>
                                                         </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endif
                                     @endforeach
-                                    
-                                    
                                 </div>
                             </div>
                         </div>
@@ -172,11 +179,18 @@
 
                 searchInput.addEventListener('input', filterforums);
 
-                const statusFilter = document.getElementById('statusFilter');
                 const forumContainers = document.querySelectorAll('.forum-link-container');
 
+                forumContainers.forEach(function(container) {
+                    const forumStatus = container.getAttribu
+                        te('data-status');
+                    if(forumStatus == 'yes'){
+                        container.style.display = 'none';
+                    }
+                });
+
                 statusFilter.addEventListener('change', function() {
-                    const selectedStatus = statusFilter.value;
+                    let selectedStatus = statusFilter.value;
 
                     forumContainers.forEach(function(container) {
                         const forumStatus = container.getAttribute('data-status');

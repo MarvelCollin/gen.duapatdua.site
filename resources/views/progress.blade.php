@@ -1,4 +1,5 @@
 @extends('components.navbar')
+<title>Case Solve Progress</title>
 <style>
     .card {
         transition: box-shadow 0.3s ease-in-out;
@@ -29,7 +30,7 @@
             });
         @endphp
 
-s
+
         <div class="row">
             @foreach ($sortedDetails as $detail)
                 @php

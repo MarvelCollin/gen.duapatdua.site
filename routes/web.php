@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\RundownController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,4 +62,10 @@ Route::middleware(['check.password'])->group(function () {
 
     Route::get('/bpproject/{id}/details', [BpController::class, 'showDetails'])->name('bpproject.details');
     Route::put('/bpprojectTeams/{id}', [BpController::class, 'updateSubtitle'])->name('bpprojectTeams.update');
+
+    Route::get('rundowns', [RundownController::class, 'index'])->name('rundowns.index');
+    Route::put('/rundowns/{rundown}', [RundownController::class, 'update'])->name('rundowns.update');
+    Route::post('rundowns', [RundownController::class, 'store'])->name('rundowns.store');
+    Route::put('rundown-details/{rundownDetail}', [RundownController::class, 'update'])->name('rundown-details.update');
+    Route::delete('rundown-details/{rundownDetail}', [RundownController::class, 'destroy'])->name('rundown-details.destroy');
 });

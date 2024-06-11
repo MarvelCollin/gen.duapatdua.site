@@ -1,5 +1,5 @@
 @extends('components.navbar')
-
+<title>Bp Teams Handling</title>
 @section('content')
     <div class="container">
         <a href="{{ route('bpprojects.index') }}" class="btn btn-danger mb-2 mt-2">Back</a>

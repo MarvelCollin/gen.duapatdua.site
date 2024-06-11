@@ -5,11 +5,15 @@
     <div class="container mt-4">
         <div class="header mb-4">
             <div class="row justify-content-end align-items-center">
-                <div class="col-md-6">
+                <div class="col-md-10">
                     <div class="d-flex justify-content-end align-items-center">
-                        <button class="btn btn-primary mr-3" id="newBpprojectBtn" data-toggle="modal"
-                            data-target="#newBpprojectModal">New BP Project</button>
-                        <button class="btn btn-primary mr-3" data-toggle="modal" data-target="#teamModal">Teams</button>
+                        <div class="row ">
+                            <a href="{{ route('rundowns.index') }}" class="btn btn-primary mr-3">Rundowns</a>
+
+                            <button class="btn btn-primary mr-3" id="newBpprojectBtn" data-toggle="modal"
+                                data-target="#newBpprojectModal">New BP Project</button>
+                            <button class="btn btn-primary mr-3" data-toggle="modal" data-target="#teamModal">Teams</button>
+                        </div>
                         <div class="search-container">
                             <input type="text" id="searchInput" class="form-control" placeholder="Search...">
                             <i class="fas fa-search search-icon"></i>
@@ -319,7 +323,7 @@
                 const newInputGroup = createInputGroup();
                 document.getElementById('subtitle-container').appendChild(newInputGroup);
             });
-            
+
 
             function createInputGroup() {
                 const newInputGroup = document.createElement('div');

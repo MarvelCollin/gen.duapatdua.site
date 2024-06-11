@@ -25,22 +25,30 @@ class CaseSolveController extends Controller
 
     public function store(Request $request)
     {
+        // Validate the request data
+        $request->validate([
+            'title' => 'required|unique:case_solves',
+            'subject' => 'required',
+            'session' => 'required',
+            'subtitles' => 'required|array',
+            'subtitles.*' => 'required|string',
+        ]);
+    
         $caseSolve = CaseSolve::create([
             'title' => $request->title,
             'subject' => $request->subject,
             'session' => $request->session,
         ]);
-
+    
         $subtitles = $request->subtitles;
-
         $activeTrainees = Trainee::where('status', 'active')->get();
-
+    
         foreach ($activeTrainees as $trainee) {
             $caseSolveDetail = CaseSolveDetail::create([
                 'case_solve_id' => $caseSolve->id,
                 'trainee_id' => $trainee->id,
             ]);
-
+    
             foreach ($subtitles as $subtitle) {
                 CaseSubtitle::create([
                     'case_solve_detail_id' => $caseSolveDetail->id,
@@ -49,9 +57,10 @@ class CaseSolveController extends Controller
                 ]);
             }
         }
-
+    
         return redirect()->route('casesolve.index')->with('success', 'Case Solve created successfully!');
     }
+    
 
 
     public function show($id)
