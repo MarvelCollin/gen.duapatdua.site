@@ -25,7 +25,6 @@ class CaseSolveController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the request data
         $request->validate([
             'title' => 'required|unique:case_solves',
             'subject' => 'required',

@@ -9,6 +9,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RundownController;
+use App\Http\Controllers\TrainerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,4 +69,7 @@ Route::middleware(['check.password'])->group(function () {
     Route::post('rundowns', [RundownController::class, 'store'])->name('rundowns.store');
     Route::put('rundown-details/{rundownDetail}', [RundownController::class, 'update'])->name('rundown-details.update');
     Route::delete('rundown-details/{rundownDetail}', [RundownController::class, 'destroy'])->name('rundown-details.destroy');
+
+    Route::resource('trainer', TrainerController::class);
+
 });
