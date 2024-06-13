@@ -21,13 +21,13 @@ class TrainerController extends Controller
         } else {
             $imagePath = 'null.jpg';
         }
-
+        $subjects = implode(', ', $request->input('subject'));
         Trainer::create([
             'code' => $request->code,
             'name' => $request->name,
             'generation' => $request->generation,
             'position' => $request->position,
-            'subject' => $request->subject,
+            'subject' => $subjects,
             'profile' => $imagePath
         ]);
 
@@ -38,7 +38,7 @@ class TrainerController extends Controller
     public function update(Request $request, $id)
     {
         $trainer = Trainer::findOrFail($id);
-
+        $subjects = implode(', ', $request->input('subject'));
         if ($request->hasFile('profile')) {
             $imagePath = $request->file('profile')->store('uploads/trainer', 'public');
 
@@ -53,7 +53,7 @@ class TrainerController extends Controller
         $trainer->name = $request->name;
         $trainer->generation = $request->generation;
         $trainer->position = $request->position;
-        $trainer->subject = $request->subject;
+        $trainer->subject = $subjects;
 
         $trainer->save();
 

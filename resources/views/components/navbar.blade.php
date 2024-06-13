@@ -58,7 +58,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var typed = new Typed('#typed-text', {
-                strings: ["", "Semangat!", "Yuk bisa yuk!","Kalau sedih, curhatnya ke angkatan ya !", "Lets go perfect core !!",
+                strings: ["Semangat!", "Yuk bisa yuk!","Kalau sedih, curhatnya ke angkatan ya !", "Lets go perfect core !!",
                     "Angkatan paling gacor", "Jangan TB TB", "24-2 Pasti semua lulus", "Jangan lupa saling bantu",
                     "Peduli angkatannya kak !!", "Jangan Quit ya ^^", "Jangan ngemeng kak", "Fokus Kak"
                 ],

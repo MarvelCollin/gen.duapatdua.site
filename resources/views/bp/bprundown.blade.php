@@ -11,7 +11,9 @@
             <select class="form-control" id="filter">
                 <option value="all">All</option>
                 @php
+                @if($rundowns)
                     $latestSubject = $rundowns->last()->subject;
+                @endif
                 @endphp
                 @foreach ($rundowns->unique('subject') as $rundown)
                     <option value="{{ $rundown->subject }}" {{ $rundown->subject == $latestSubject ? 'selected' : '' }}>
