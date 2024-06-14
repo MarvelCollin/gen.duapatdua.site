@@ -11,10 +11,13 @@
             <select class="form-control" id="filter">
                 <option value="all">All</option>
                 @php
-                @if($rundowns)
-                    $latestSubject = $rundowns->last()->subject;
-                @endif
+                    if ($rundowns->isNotEmpty()) {
+                        $latestSubject = $rundowns->last()->subject;
+                    } else {
+                        $latestSubject = null;  
+                    }
                 @endphp
+
                 @foreach ($rundowns->unique('subject') as $rundown)
                     <option value="{{ $rundown->subject }}" {{ $rundown->subject == $latestSubject ? 'selected' : '' }}>
                         {{ $rundown->subject }}
@@ -225,22 +228,22 @@
 
 
         document.addEventListener('DOMContentLoaded', function() {
-        const filterSelect = document.getElementById('filter');
-        let value = "{{ $latestSubject }}"; 
-        const rundownCards = document.querySelectorAll('.rundown-card');
-        
-        rundownCards.forEach(function(card) {
-            const subject = card.getAttribute('data-subject');
-            card.style.display = subject === value || value === 'all' ? 'block' : 'none';
-        });
+            const filterSelect = document.getElementById('filter');
+            let value = "{{ $latestSubject }}";
+            const rundownCards = document.querySelectorAll('.rundown-card');
 
-        filterSelect.addEventListener('change', function() {
-            value = this.value;
             rundownCards.forEach(function(card) {
                 const subject = card.getAttribute('data-subject');
-                card.style.display = value === 'all' || subject === value ? 'block' : 'none';
+                card.style.display = subject === value || value === 'all' ? 'block' : 'none';
+            });
+
+            filterSelect.addEventListener('change', function() {
+                value = this.value;
+                rundownCards.forEach(function(card) {
+                    const subject = card.getAttribute('data-subject');
+                    card.style.display = value === 'all' || subject === value ? 'block' : 'none';
+                });
             });
         });
-    });
     </script>
 @endsection

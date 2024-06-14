@@ -57,6 +57,7 @@
                                 <h5 class="card-text">{{ $trainer->name }}</h5>
                                 <h5 class="card-text">{{ $trainer->position }}</h5>
                                 <h6 class="card-text">{{ $trainer->subject }}</h6>
+                                <p class="card-text">{{ $trainer->degree }} | {{ $trainer->binusian }}</p>
                             </div>
                         </div>
                     </div>
@@ -64,7 +65,6 @@
             </div>
         </div>
 
-        <!-- Edit Trainer Modals -->
         @foreach ($trainers as $trainer)
             <div class="modal fade" id="editTrainerModal{{ $trainer->id }}" tabindex="-1" role="dialog"
                 aria-labelledby="editTrainerModalLabel{{ $trainer->id }}" aria-hidden="true" data-backdrop="static"
@@ -78,15 +78,15 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="editTrainerForm{{ $trainer->id }}" action="{{ route('trainer.update', $trainer->id)}}" method="POST" enctype="multipart/form-data"
-                                class="needs-validation" novalidate>
+                            <form id="editTrainerForm{{ $trainer->id }}"
+                                action="{{ route('trainer.update', $trainer->id) }}" method="POST"
+                                enctype="multipart/form-data" class="needs-validation" novalidate>
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
                                     <label for="edit_code{{ $trainer->id }}">Trainer Code / Initial:</label>
                                     <input type="text" id="edit_code{{ $trainer->id }}" name="code"
                                         class="form-control" required value="{{ $trainer->code }}">
-                                    <div class="invalid-feedback">Please start with T0.</div>
                                 </div>
 
                                 <div class="form-group">
@@ -109,7 +109,6 @@
                                                 <option value="{{ $trainerOption->generation }}">
                                                     {{ $trainerOption->generation }}</option>
                                             @endforeach
-                                            <option value="other">Other</option>
                                         </select>
                                     </div>
                                 </div>
@@ -127,7 +126,6 @@
                                                 <option value="{{ $trainerOption->position }}">
                                                     {{ $trainerOption->position }}</option>
                                             @endforeach
-                                            <option value="other">Other</option>
                                         </select>
                                     </div>
                                 </div>
@@ -136,40 +134,91 @@
                                     <label for="edit_subject{{ $trainer->id }}">Subject:</label>
                                     <div class="subject-checkboxes">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="ads{{ $trainer->id }}" value="A&DS">
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="ads{{ $trainer->id }}" value="A&DS">
                                             <label class="form-check-label" for="ads{{ $trainer->id }}">A&DS</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="java{{ $trainer->id }}" value="Java">
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="java{{ $trainer->id }}" value="Java">
                                             <label class="form-check-label" for="java{{ $trainer->id }}">Java</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="database{{ $trainer->id }}" value="Database">
-                                            <label class="form-check-label" for="database{{ $trainer->id }}">Database</label>
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="database{{ $trainer->id }}" value="Database">
+                                            <label class="form-check-label"
+                                                for="database{{ $trainer->id }}">Database</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="web_design{{ $trainer->id }}" value="Web Design">
-                                            <label class="form-check-label" for="web_design{{ $trainer->id }}">Web Design</label>
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="web_design{{ $trainer->id }}" value="Web Design">
+                                            <label class="form-check-label" for="web_design{{ $trainer->id }}">Web
+                                                Design</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="web_programming{{ $trainer->id }}" value="Web Programming">
-                                            <label class="form-check-label" for="web_programming{{ $trainer->id }}">Web Programming</label>
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="web_programming{{ $trainer->id }}" value="Web Programming">
+                                            <label class="form-check-label" for="web_programming{{ $trainer->id }}">Web
+                                                Programming</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="networking{{ $trainer->id }}" value="Networking">
-                                            <label class="form-check-label" for="networking{{ $trainer->id }}">Networking</label>
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="networking{{ $trainer->id }}" value="Networking">
+                                            <label class="form-check-label"
+                                                for="networking{{ $trainer->id }}">Networking</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="python{{ $trainer->id }}" value="Python">
-                                            <label class="form-check-label" for="python{{ $trainer->id }}">Python</label>
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="python{{ $trainer->id }}" value="Python">
+                                            <label class="form-check-label"
+                                                for="python{{ $trainer->id }}">Python</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="subject[]" id="computer_vision{{ $trainer->id }}" value="Computer Vision">
-                                            <label class="form-check-label" for="computer_vision{{ $trainer->id }}">Computer Vision</label>
+                                            <input class="form-check-input" type="checkbox" name="subject[]"
+                                                id="computer_vision{{ $trainer->id }}" value="Computer Vision">
+                                            <label class="form-check-label"
+                                                for="computer_vision{{ $trainer->id }}">Computer Vision</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div id="selectedSubjects{{ $trainer->id }}"></div>
+
+                                <div class="form-group">
+                                    <label for="edit_binusian{{ $trainer->id }}">binusian:</label>
+                                    <input type="text" id="edit_binusian{{ $trainer->id }}" name="binusian"
+                                        class="form-control" required value="{{ $trainer->binusian }}">
+                                    <div class="invalid-feedback">Please fill in the binusian.</div>
+                                    <div class="suggestions">
+                                        <select class="form-control binusian-suggestions"
+                                            data-target-input="#edit_binusian{{ $trainer->id }}">
+                                            <option value="">Select a binusian</option>
+                                            @foreach ($trainers->unique('binusian') as $trainerOption)
+                                                <option value="{{ $trainerOption->binusian }}">
+                                                    {{ $trainerOption->binusian }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="edit_degree{{ $trainer->id }}">degree:</label>
+                                    <input type="text" id="edit_degree{{ $trainer->id }}" name="degree"
+                                        class="form-control" required value="{{ $trainer->degree }}">
+                                    <div class="invalid-feedback">Please fill in the degree.</div>
+                                    <div class="suggestions">
+                                        <select class="form-control degree-suggestions"
+                                            data-target-input="#edit_degree{{ $trainer->id }}">
+                                            <option value="">Select a degree</option>
+                                            @foreach ($trainers->unique('degree') as $trainerOption)
+                                                <option value="{{ $trainerOption->degree }}">
+                                                    {{ $trainerOption->degree }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
                                     <label for="profile">Profile Picture</label>
@@ -181,7 +230,7 @@
                                         <div class="invalid-feedback">Please upload a profile picture.</div>
                                     </div>
                                 </div>
-                                
+
 
                                 <input type="hidden" id="edit_trainer_id{{ $trainer->id }}" name="trainer_id"
                                     value="{{ $trainer->id }}">
@@ -193,6 +242,17 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+                $(document).ready(function() {
+                    var subjectsArray = {!! json_encode(explode(',', $trainer->subject)) !!};
+
+                    subjectsArray.forEach(function(subject) {
+                        $('#editTrainerModal{{ $trainer->id }} .subject-checkboxes input[type="checkbox"][value="' +
+                            subject.trim() + '"]').prop('checked', true);
+                    });
+                });
+            </script>
         @endforeach
 
         <div class="modal fade" id="newTrainerModal" tabindex="-1" role="dialog"
@@ -251,36 +311,83 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="binusian">Binusian:</label>
+                                <input type="text" id="binusian" name="binusian" class="form-control binusian-input"
+                                    required>
+                                <div class="invalid-feedback">Please fill in the binusian.</div>
+                                <div class="suggestions">
+                                    <select class="form-control binusian-suggestions">
+                                        <option value="">Select a binusian</option>
+                                        @foreach ($trainers->unique() as $trainerOption)
+                                            <option value="{{ $trainerOption->binusian }}">{{ $trainerOption->binusian }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="degree">Degree:</label>
+                                <input type="text" id="degree" name="degree" class="form-control degree-input"
+                                    required>
+                                <div class="invalid-feedback">Please fill in the degree.</div>
+                                <div class="suggestions">
+                                    <select class="form-control degree-suggestions">
+                                        <option value="">Select a degree</option>
+                                        @foreach ($trainers->unique() as $trainerOption)
+                                            <option value="{{ $trainerOption->degree }}">{{ $trainerOption->degree }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="subject">Subject:</label>
                                 <div class="subject-checkboxes">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="database" name="subject[]" value="Database">
+                                        <input class="form-check-input" type="checkbox" id="A&DS" name="subject[]"
+                                            value="A&DS">
+                                        <label class="form-check-label" for="A&DS">A&DS</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="java" name="subject[]"
+                                            value="Java">
+                                        <label class="form-check-label" for="java">Java</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="database" name="subject[]"
+                                            value="Database">
                                         <label class="form-check-label" for="database">Database</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="web_design" name="subject[]" value="Web Design">
+                                        <input class="form-check-input" type="checkbox" id="web_design" name="subject[]"
+                                            value="Web Design">
                                         <label class="form-check-label" for="web_design">Web Design</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="web_programming" name="subject[]" value="Web Programming">
+                                        <input class="form-check-input" type="checkbox" id="web_programming"
+                                            name="subject[]" value="Web Programming">
                                         <label class="form-check-label" for="web_programming">Web Programming</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="networking" name="subject[]" value="Networking">
+                                        <input class="form-check-input" type="checkbox" id="networking" name="subject[]"
+                                            value="Networking">
                                         <label class="form-check-label" for="networking">Networking</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="python" name="subject[]" value="Python">
+                                        <input class="form-check-input" type="checkbox" id="python" name="subject[]"
+                                            value="Python">
                                         <label class="form-check-label" for="python">Python</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="computer_vision" name="subject[]" value="Computer Vision">
+                                        <input class="form-check-input" type="checkbox" id="computer_vision"
+                                            name="subject[]" value="Computer Vision">
                                         <label class="form-check-label" for="computer_vision">Computer Vision</label>
                                     </div>
                                 </div>
                                 <div id="selectedSubjects"></div>
                             </div>
-                            
 
                             <div class="form-group">
                                 <label for="profile">Profile Picture</label>
@@ -299,19 +406,11 @@
                 </div>
             </div>
         </div>
-        <script>
-            $(document).ready(function() {
-                var subjectsArray = {!! json_encode(explode(',', $trainer->subject)) !!};
-        
-                subjectsArray.forEach(function(subject) {
-                    $('#editTrainerModal{{ $trainer->id }} .subject-checkboxes input[type="checkbox"][value="' + subject.trim() + '"]').prop('checked', true);
-                });
-            });
-        </script>
+
         <script>
             @foreach ($trainers as $trainer)
                 $('#editTrainerModal{{ $trainer->id }}').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget); 
+                    var button = $(event.relatedTarget);
                     var trainerId = button.data('id');
                     var code = button.data('code');
                     var name = button.data('name');
@@ -381,7 +480,7 @@
                     }
                 });
 
-            
+
             });
         </script>
     </div>

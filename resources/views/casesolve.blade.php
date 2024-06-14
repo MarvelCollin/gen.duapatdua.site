@@ -6,6 +6,21 @@
         <div class="header mb-4">
             <div class="row justify-content-end align-items-center">
                 <div class="col-md-6">
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+    
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+                <div class="col-md-6">
                     <div class="d-flex justify-content-end align-items-center">
                         <button class="btn btn-primary mr-3" id="newCaseSolveBtn" data-toggle="modal"
                             data-target="#newCaseSolveModal">New Case Solve</button>
@@ -66,68 +81,68 @@
                                     <form action="{{ route('casesolve.update', $caseSolve->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="title">Title:</label>
-                                                        <input type="text" id="title" name="title"
-                                                            class="form-control" value="{{ $caseSolve->title }}">
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="subject">Subject:</label>
-                                                        <select id="subject" name="subject" class="form-control"
-                                                            value="{{ $caseSolve->subject }}">
-                                                            <option value="A&DS">A&DS</option>
-                                                            <option value="Java">Java</option>
-                                                            <option value="Database">Database</option>
-                                                            <option value="Web Design">Web Design</option>
-                                                            <option value="Web Programming">Web Programming</option>
-                                                            <option value="Networking">Networking</option>
-                                                            <option value="Python">Python</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="session">Session:</label>
-                                                        <select id="session" name="session" class="form-control"
-                                                            value="{{ $caseSolve->session }}">
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                        </select>
-                                                    </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="title">Title:</label>
+                                                    <input type="text" id="title" name="title" class="form-control"
+                                                        value="{{ $caseSolve->title }}">
                                                 </div>
 
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="subtitles">Subtitles:</label>
-                                                        <div id="subtitle-container-edit-{{ $caseSolve->id }}">
-                                                            @if ($caseSolveDetails)
-                                                                @foreach ($caseSolveDetails as $caseSolveDetail)
-                                                                    @foreach ($caseSubtitles->unique('subtitle') as $subtitle)
-                                                                        @if ($subtitle->case_solve_detail_id == $caseSolveDetail->id && $caseSolveDetail->case_solve_id == $caseSolve->id)
-                                                                            <div class="input-group mb-2">
-                                                                                <input type="text" name="subtitles[]"
-                                                                                    class="form-control"
-                                                                                    value="{{ $subtitle->subtitle }}">
-                                                                                <div class="input-group-append">
-                                                                                    <button type="button"
-                                                                                        class="btn btn-danger remove-subtitle">Remove</button>
-                                                                                </div>
-                                                                            </div>
-                                                                        @endif
-                                                                    @endforeach
-                                                                @endforeach
-                                                            @endif
-                                                        </div>
-                                                        <button type="button"
-                                                            class="btn btn-primary mt-2 add-subtitle-edit"
-                                                            data-casesolveid="{{ $caseSolve->id }}">Add New
-                                                            Subtitle</button>
-                                                    </div>
+                                                <div class="form-group">
+                                                    <label for="subject">Subject:</label>
+                                                    <select id="subject" name="subject" class="form-control"
+                                                        value="{{ $caseSolve->subject }}">
+                                                        <option value="A&DS">A&DS</option>
+                                                        <option value="Java">Java</option>
+                                                        <option value="Database">Database</option>
+                                                        <option value="Web Design">Web Design</option>
+                                                        <option value="Web Programming">Web Programming</option>
+                                                        <option value="Networking">Networking</option>
+                                                        <option value="Python">Python</option>
+                                                        <option value="Computer Vision">Computer Vision</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="session">Session:</label>
+                                                    <select id="session" name="session" class="form-control"
+                                                        value="{{ $caseSolve->session }}">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                    </select>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-success">Edit</button>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="subtitles">Subtitles:</label>
+                                                    <div id="subtitle-container-edit-{{ $caseSolve->id }}">
+                                                        @if ($caseSolveDetails)
+                                                            @foreach ($caseSolveDetails as $caseSolveDetail)
+                                                                @foreach ($caseSubtitles->unique('subtitle') as $subtitle)
+                                                                    @if ($subtitle->case_solve_detail_id == $caseSolveDetail->id && $caseSolveDetail->case_solve_id == $caseSolve->id)
+                                                                        <div class="input-group mb-2">
+                                                                            <input type="text" name="subtitles[]"
+                                                                                class="form-control"
+                                                                                value="{{ $subtitle->subtitle }}">
+                                                                            <div class="input-group-append">
+                                                                                <button type="button"
+                                                                                    class="btn btn-danger remove-subtitle">Remove</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                @endforeach
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary mt-2 add-subtitle-edit"
+                                                        data-casesolveid="{{ $caseSolve->id }}">Add New
+                                                        Subtitle</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Edit</button>
                                     </form>
                                 </div>
                             </div>
@@ -168,6 +183,7 @@
                                             <option value="Web Programming">Web Programming</option>
                                             <option value="Networking">Networking</option>
                                             <option value="Python">Python</option>
+                                            <option value="Computer Vision">Computer Vision</option>
                                         </select>
                                     </div>
 

@@ -15,6 +15,18 @@
         <h1 class="mb-4">{{ $caseSolve->title }}</h1>
         <p class="mb-2">Subject: {{ $caseSolve->subject }}</p>
         <p class="mb-5">Session: {{ $caseSolve->session }}</p>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="mb-5">
             <a class="btn btn-secondary" href="{{ route('casesolve.index') }}">
                 Back
@@ -45,7 +57,8 @@
                             <h5 class="card-title">{{ $detail->trainee->trainee_number }} - {{ $detail->trainee->name }}
                             </h5>
                             <p>Total Progress: {{ $totalPercentageDone }}%</p>
-                            <button type="button" class="btn btn-primary" onclick="openModal('{{ $detail->id }}')">Update
+                            <button type="button" class="btn btn-primary"
+                                onclick="openModal('{{ $detail->id }}')">Update
                                 Progress</button>
                         </div>
                     </div>

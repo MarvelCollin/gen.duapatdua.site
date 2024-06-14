@@ -28,7 +28,9 @@ class TrainerController extends Controller
             'generation' => $request->generation,
             'position' => $request->position,
             'subject' => $subjects,
-            'profile' => $imagePath
+            'profile' => $imagePath,
+            'binusian' => $request->binusian,
+            'degree' => $request->degree
         ]);
 
         return redirect()->route('trainer.index')
@@ -54,6 +56,8 @@ class TrainerController extends Controller
         $trainer->generation = $request->generation;
         $trainer->position = $request->position;
         $trainer->subject = $subjects;
+        $trainer->binusian = $request->binusian;
+        $trainer->degree = $request->degree;
 
         $trainer->save();
 

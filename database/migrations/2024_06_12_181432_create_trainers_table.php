@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('position')->nullable();
             $table->string('subject')->nullable();
             $table->string('profile')->nullable();
+            $table->string('binusian')->nullable();
+            $table->string('degree')->nullable();
             $table->timestamps();
         });
     }

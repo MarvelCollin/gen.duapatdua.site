@@ -159,49 +159,42 @@
 
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchInput = document.getElementById('searchInput');
-                const forumsContainer = document.getElementById('forums');
+            const searchInput = document.getElementById('searchInput');
+            const forumsContainer = document.getElementById('forums');
+            const statusFilter = document.getElementById('statusFilter');
+            const forumContainers = document.querySelectorAll('.forum-link-container');
 
-                function filterforums() {
-                    const searchValue = searchInput.value.trim().toLowerCase();
-                    const forums = document.querySelectorAll('.card');
+            function filterforums() {
+                const searchValue = searchInput.value.trim().toLowerCase();
+                const forums = document.querySelectorAll('.card');
 
-                    forums.forEach(forum => {
-                        const title = forum.querySelector('.card-title').textContent.toLowerCase();
-                        if (title.includes(searchValue)) {
-                            forum.style.display = '';
-                        } else {
-                            forum.style.display = 'none';
-                        }
-                    });
-                }
+                forums.forEach(forum => {
+                    const title = forum.querySelector('.card-title').textContent.toLowerCase();
+                    if (title.includes(searchValue)) {
+                        forum.style.display = '';
+                    } else {
+                        forum.style.display = 'none';
+                    }
+                });
+            }
 
-                searchInput.addEventListener('input', filterforums);
-
-                const forumContainers = document.querySelectorAll('.forum-link-container');
-
-                forumContainers.forEach(function(container) {
-                    const forumStatus = container.getAttribu
-                        te('data-status');
-                    if(forumStatus == 'yes'){
+            function filterByStatus() {
+                const selectedStatus = statusFilter.value;
+                forumContainers.forEach(container => {
+                    const forumStatus = container.getAttribute('data-status');
+                    if (selectedStatus === 'all' || forumStatus === selectedStatus || (selectedStatus === 'no' &&
+                            forumStatus !== 'yes')) {
+                        container.style.display = 'block';
+                    } else {
                         container.style.display = 'none';
                     }
                 });
+            }
 
-                statusFilter.addEventListener('change', function() {
-                    let selectedStatus = statusFilter.value;
+            searchInput.addEventListener('input', filterforums);
+            statusFilter.addEventListener('change', filterByStatus);
 
-                    forumContainers.forEach(function(container) {
-                        const forumStatus = container.getAttribute('data-status');
-
-                        if (selectedStatus === 'all' || selectedStatus === forumStatus) {
-                            container.style.display = 'block';
-                        } else {
-                            container.style.display = 'none';
-                        }
-                    });
-                });
-            });
+            // Initial filter setup
+            filterByStatus();
         </script>
     @endsection

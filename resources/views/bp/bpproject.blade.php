@@ -8,11 +8,11 @@
                 <div class="col-md-10">
                     <div class="d-flex justify-content-end align-items-center">
                         <div class="row ">
-                            <a href="{{ route('rundowns.index') }}" class="btn btn-primary mr-3">Rundowns</a>
+                            <a href="{{ route('rundowns.index') }}" class="btn btn-primary mr-3 mt-2">Rundowns</a>
 
-                            <button class="btn btn-primary mr-3" id="newBpprojectBtn" data-toggle="modal"
+                            <button class="btn btn-primary mr-3 mt-2" id="newBpprojectBtn" data-toggle="modal"
                                 data-target="#newBpprojectModal">New BP Project</button>
-                            <button class="btn btn-primary mr-3" data-toggle="modal" data-target="#teamModal">Teams</button>
+                            <button class="btn btn-primary mr-3 mt-2" data-toggle="modal" data-target="#teamModal">Teams</button>
                         </div>
                         <div class="search-container">
                             <input type="text" id="searchInput" class="form-control" placeholder="Search...">
@@ -79,6 +79,7 @@
                                                         <option value="Web Programming">Web Programming</option>
                                                         <option value="Networking">Networking</option>
                                                         <option value="Python">Python</option>
+                                                        <option value="Computer Vision">Computer Vision</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
@@ -91,7 +92,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="subtitles">Subtitles:</label>
-                                                    <div id="subtitle-container">
+                                                    <div id="subtitle-container_{{ $bpproject->id }}">
                                                         @if ($bpprojectDetails)
                                                             @foreach ($bpprojectDetails as $bpprojectDetail)
                                                                 @foreach ($bpprojectSubtitles->unique('subtitle') as $subtitle)
@@ -111,8 +112,9 @@
                                                         @endif
 
                                                     </div>
-                                                    <button type="button" class="btn btn-primary mt-2" id="add-subtitle"
-                                                        data-bpprojectid="{{ $bpproject->id }}">Add New
+                                                    <button type="button" class="btn btn-primary mt-2"
+                                                        id="edit-subtitle_{{ $bpproject->id }}" data-bpprojectid="{{ $bpproject->id }}">Add
+                                                        New
                                                         Subtitle</button>
                                                 </div>
                                             </div>
@@ -123,6 +125,34 @@
                             </div>
                         </div>
                     </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const projectId = "{{ $bpproject->id }}";
+
+                            function addSubtitle(containerId) {
+                                const container = document.getElementById(containerId);
+                                const newSubtitle = document.createElement('div');
+                                newSubtitle.classList.add('input-group', 'mb-2');
+                                newSubtitle.innerHTML = `
+                                    <input type="text" name="subtitles[]" class="form-control" required>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-danger remove-subtitle">Remove</button>
+                                    </div>
+                                `;
+                                container.appendChild(newSubtitle);
+                            }
+
+                            document.getElementById('edit-subtitle_' + projectId).addEventListener('click', function() {
+                                addSubtitle('subtitle-container_' + projectId);
+                            });
+
+                            document.addEventListener('click', function(e) {
+                                if (e.target && e.target.classList.contains('remove-subtitle')) {
+                                    e.target.closest('.input-group').remove();
+                                }
+                            });
+                        });
+                    </script>
                 @endforeach
             </div>
         </div>
@@ -158,8 +188,10 @@
                                             <option value="Web Programming">Web Programming</option>
                                             <option value="Networking">Networking</option>
                                             <option value="Python">Python</option>
+                                            <option value="Computer Vision">Computer Vision</option>
                                         </select>
                                     </div>
+
                                     <div class="form-group">
                                         <label for="bpnotes">Notes:</label>
                                         <input type="text" id="bpnotes" name="bpnotes" class="form-control"
@@ -169,7 +201,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="subtitles">Subtitles:</label>
-                                        <div id="subtitle-container">
+                                        <div id="subtitle-container-new">
                                             <div class="input-group mb-2">
                                                 <input type="text" name="subtitles[]" class="form-control" required>
                                                 <div class="input-group-append">
@@ -178,7 +210,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" id="add-subtitle" class="btn btn-primary mt-2">Add New
+                                        <button type="button" class="btn btn-primary mt-2" id="add-subtitle-new">Add New
                                             Subtitle</button>
                                     </div>
                                 </div>
@@ -318,47 +350,73 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            document.getElementById('add-subtitle').addEventListener('click', function() {
-                const newInputGroup = createInputGroup();
-                document.getElementById('subtitle-container').appendChild(newInputGroup);
-            });
-
-
-            function createInputGroup() {
-                const newInputGroup = document.createElement('div');
-                newInputGroup.classList.add('input-group', 'mb-2');
-
-                const newInput = document.createElement('input');
-                newInput.type = 'text';
-                newInput.name = 'subtitles[]';
-                newInput.classList.add('form-control');
-                newInput.required = true;
-
-                const inputGroupAppend = document.createElement('div');
-                inputGroupAppend.classList.add('input-group-append');
-
-                const removeButton = document.createElement('button');
-                removeButton.type = 'button';
-                removeButton.classList.add('btn', 'btn-danger', 'remove-subtitle');
-                removeButton.textContent = 'Remove';
-
-                removeButton.addEventListener('click', function() {
-                    newInputGroup.remove();
-                });
-
-                inputGroupAppend.appendChild(removeButton);
-                newInputGroup.appendChild(newInput);
-                newInputGroup.appendChild(inputGroupAppend);
-
-                return newInputGroup;
+            function addSubtitle(containerId) {
+                const container = document.getElementById(containerId);
+                const newSubtitle = document.createElement('div');
+                newSubtitle.classList.add('input-group', 'mb-2');
+                newSubtitle.innerHTML = `
+                    <input type="text" name="subtitles[]" class="form-control" required>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-danger remove-subtitle">Remove</button>
+                    </div>
+                `;
+                container.appendChild(newSubtitle);
             }
 
-            document.querySelectorAll('.remove-subtitle').forEach(button => {
+            document.getElementById('add-subtitle-new').addEventListener('click', function() {
+                addSubtitle('subtitle-container-new');
+            });
+
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('remove-subtitle')) {
+                    e.target.closest('.input-group').remove();
+                }
+            });
+
+            document.querySelectorAll('.add-subtitle').forEach(function(button) {
                 button.addEventListener('click', function() {
-                    button.closest('.input-group').remove();
+                    const projectId = button.getAttribute('data-bpprojectid');
+                    addSubtitle('subtitle-container_' + projectId);
                 });
             });
+        });
+
+
+
+
+        function createInputGroup() {
+            const newInputGroup = document.createElement('div');
+            newInputGroup.classList.add('input-group', 'mb-2');
+
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.name = 'subtitles[]';
+            newInput.classList.add('form-control');
+            newInput.required = true;
+
+            const inputGroupAppend = document.createElement('div');
+            inputGroupAppend.classList.add('input-group-append');
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.classList.add('btn', 'btn-danger', 'remove-subtitle');
+            removeButton.textContent = 'Remove';
+
+            removeButton.addEventListener('click', function() {
+                newInputGroup.remove();
+            });
+
+            inputGroupAppend.appendChild(removeButton);
+            newInputGroup.appendChild(newInput);
+            newInputGroup.appendChild(inputGroupAppend);
+
+            return newInputGroup;
+        }
+
+        document.querySelectorAll('.remove-subtitle').forEach(button => {
+        button.addEventListener('click', function() {
+            button.closest('.input-group').remove();
+        });
         });
     </script>
 @endsection
