@@ -18,21 +18,29 @@
         }
     </style>
     <div class="container mt-4">
-        <div class="header">
-            <button class="btn btn-primary" id="newCaseSolveBtn" data-toggle="modal" data-target="#newCaseSolveModal">New
-                Trainee</button>
+        <div class="header row">
+            <div class="col-md-3">
+                <button class="btn btn-primary" id="newCaseSolveBtn" data-toggle="modal" data-target="#newCaseSolveModal">New
+                    Trainee</button>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="searchBar" class="form-control" placeholder="Search trainees...">
+            </div>
         </div>
         <div class="card-container">
-                @php
-                    $sortedTrainees = $trainee->sortBy(function ($t) {
-                        return intval(str_replace('T0', '', $t->trainee_number));
-                    });
-                @endphp
+            @php
+                $sortedTrainees = $trainee->sortBy(function ($t) {
+                    return intval(str_replace('T0', '', $t->trainee_number));
+                });
+            @endphp
             <h2 class="mt-2">Active Trainees</h2>
             <div class="row justify-content-center">
                 @foreach ($sortedTrainees as $trainee)
                     @if ($trainee->status == 'active')
-                        <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="col-lg-4 col-md-6 mb-4 trainee-card" data-id="{{ $trainee->id }}"
+                            data-number="{{ $trainee->trainee_number }}" data-name="{{ $trainee->name }}"
+                            data-degree="{{ $trainee->degree }}" data-binusian="{{ $trainee->binusian }}"
+                            data-status="{{ $trainee->status }}">
                             <div class="card h-100 active-trainee" onclick="showTraineeModal(this)"
                                 data-id="{{ $trainee->id }}" data-number="{{ $trainee->trainee_number }}"
                                 data-name="{{ $trainee->name }}" data-degree="{{ $trainee->degree }}"
@@ -42,15 +50,12 @@
                                 <img src="{{ asset('storage/' . $trainee->profile) }}" alt="Profile Image"
                                     class="card-img-top img-fluid" style="width: auto; height: 40vh; border-radius: 5%">
                                 <div class="card-body text-center">
-                                    <h3 class="card-title">
-                                        {{ $trainee->trainee_number }}
-                                    </h3>
+                                    <h3 class="card-title">{{ $trainee->trainee_number }}</h3>
                                     <h5 class="card-text">{{ $trainee->name }}</h5>
                                     <h5 class="card-text">{{ $trainee->degree }} | {{ $trainee->binusian }}</h5>
                                     <div class="row justify-content-between">
-                                        <p style="font-size: 1vw" class="card-text">Forum : {{ $trainee->totalForum }}
-                                        </p>
-                                        <p style="font-size: 1vw" class="card-text">Acq : {{ $trainee->totalAcq }} </p>
+                                        <p style="font-size: 1vw" class="card-text">Forum : {{ $trainee->totalForum }}</p>
+                                        <p style="font-size: 1vw" class="card-text">Acq : {{ $trainee->totalAcq }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -180,6 +185,25 @@
         </div>
         <script src="{{ asset('js/trainee.js') }}"></script>
         <script>
+            document.getElementById('searchBar').addEventListener('input', function() {
+                let filter = this.value.toLowerCase();
+                let cards = document.querySelectorAll('.trainee-card');
+
+                cards.forEach(function(card) {
+                    let number = card.getAttribute('data-number').toLowerCase();
+                    let name = card.getAttribute('data-name').toLowerCase();
+                    let degree = card.getAttribute('data-degree').toLowerCase();
+                    let binusian = card.getAttribute('data-binusian').toLowerCase();
+
+                    if (number.includes(filter) || name.includes(filter) || degree.includes(filter) || binusian
+                        .includes(filter)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
             document.addEventListener('DOMContentLoaded', function() {
                 const searchInput = document.getElementById('searchInput');
                 const traineeCards = document.querySelectorAll('.trainee-card');

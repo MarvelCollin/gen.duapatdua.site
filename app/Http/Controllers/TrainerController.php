@@ -14,6 +14,11 @@ class TrainerController extends Controller
         return view('trainer.trainer', compact('trainers'));
     }
 
+    public function quiz(){
+        $trainers = Trainer::all();
+        return view('trainer.trainer_quiz', compact('trainers'));
+    }
+
     public function store(Request $request)
     {
         if ($request->hasFile('profile')) {
@@ -21,17 +26,38 @@ class TrainerController extends Controller
         } else {
             $imagePath = 'null.jpg';
         }
+
         $subjects = implode(', ', $request->input('subject'));
-        Trainer::create([
+
+        $generation = $request->generation;
+        $position = $request->position;
+        $binusian = $request->binusian;
+        $degree = $request->degree;
+
+        if ($request->generation == 'other') {
+            $generation = $request->other_generation;
+        }
+        if ($request->position == 'other') {
+            $position = $request->other_position;
+        }
+        if ($request->binusian == 'other') {
+            $binusian = $request->other_binusian;
+        }
+        if ($request->degree == 'other') {
+            $degree = $request->other_degree;
+        }
+
+        $trainer = Trainer::create([
             'code' => $request->code,
             'name' => $request->name,
-            'generation' => $request->generation,
-            'position' => $request->position,
+            'generation' => $generation,
+            'position' => $position,
             'subject' => $subjects,
             'profile' => $imagePath,
-            'binusian' => $request->binusian,
-            'degree' => $request->degree
+            'binusian' => $binusian,
+            'degree' => $degree
         ]);
+ 
 
         return redirect()->route('trainer.index')
             ->with('success', 'Trainer created successfully.');
@@ -39,6 +65,7 @@ class TrainerController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request->generation);
         $trainer = Trainer::findOrFail($id);
         $subjects = implode(', ', $request->input('subject'));
         if ($request->hasFile('profile')) {
@@ -51,13 +78,31 @@ class TrainerController extends Controller
             $trainer->profile = $imagePath;
         }
 
+        $generation = $request->generation;
+        $position = $request->position;
+        $binusian = $request->binusian;
+        $degree = $request->degree;
+
+        if ($generation == 'other') {
+            $generation = $request->other_generation;
+        }
+        if ($request->position == 'other') {
+            $position = $request->other_position;
+        }
+        if ($request->binusian == 'other') {
+            $binusian = $request->other_binusian;
+        }
+        if ($request->degree === 'other') {
+            $degree = $request->other_degree;
+        }
+
         $trainer->code = $request->code;
         $trainer->name = $request->name;
-        $trainer->generation = $request->generation;
-        $trainer->position = $request->position;
+        $trainer->generation = $generation;
+        $trainer->position = $position;
         $trainer->subject = $subjects;
-        $trainer->binusian = $request->binusian;
-        $trainer->degree = $request->degree;
+        $trainer->binusian = $binusian;
+        $trainer->degree = $degree;
 
         $trainer->save();
 

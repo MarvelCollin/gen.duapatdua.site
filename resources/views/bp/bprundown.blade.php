@@ -1,4 +1,5 @@
 @extends('components.navbar')
+<title>Rundown</title>
 @section('content')
     <div class="container">
         <h2 class="mb-4">Rundown Management</h2>
@@ -11,20 +12,14 @@
             <select class="form-control" id="filter">
                 <option value="all">All</option>
                 @php
-                    if ($rundowns->isNotEmpty()) {
-                        $latestSubject = $rundowns->last()->subject;
-                    } else {
-                        $latestSubject = null;  
-                    }
+                    $latestSubject = $rundowns->isNotEmpty() ? $rundowns->last()->subject : null;
                 @endphp
-
                 @foreach ($rundowns->unique('subject') as $rundown)
                     <option value="{{ $rundown->subject }}" {{ $rundown->subject == $latestSubject ? 'selected' : '' }}>
                         {{ $rundown->subject }}
                     </option>
                 @endforeach
             </select>
-
         </div>
 
         @php
@@ -72,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="editSubjectModal_{{ $rundown->id }}"tabindex="-1" role="dialog"
+            <div class="modal fade" id="editSubjectModal_{{ $rundown->id }}" tabindex="-1" role="dialog"
                 aria-labelledby="createRundownModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
@@ -88,6 +83,7 @@
                             <div class="modal-body">
                                 <div class="form-group row">
                                     <div class="col">
+                                        <label for="subject">Subject</label>
                                         <select class="form-control" id="subject" name="subject" required>
                                             <option value="A&DS" {{ $rundown->subject == 'A&DS' ? 'selected' : '' }}>A&DS
                                             </option>
@@ -116,6 +112,19 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="edit-activity-container">
+                                        <div class="activity-row row mt-2">
+                                            <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
+                                            <div class="col-md-2">
+                                                Start
+                                            </div>
+                                            <div class="col-md-2">
+                                                End
+                                            </div>
+                                            <div class="col-md-6">
+                                                Activity
+                                            </div>
+                                         
+                                        </div>
                                         @foreach ($rundownDetails->where('rundown_id', $rundown->id) as $index => $detail)
                                             <div class="activity-row row mt-2">
                                                 <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
@@ -195,10 +204,6 @@
         </div>
     </div>
 
-
-
-
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script>
@@ -226,24 +231,21 @@
             $(this).closest('.activity-row').remove();
         });
 
-
         document.addEventListener('DOMContentLoaded', function() {
             const filterSelect = document.getElementById('filter');
-            let value = "{{ $latestSubject }}";
             const rundownCards = document.querySelectorAll('.rundown-card');
 
-            rundownCards.forEach(function(card) {
-                const subject = card.getAttribute('data-subject');
-                card.style.display = subject === value || value === 'all' ? 'block' : 'none';
-            });
-
-            filterSelect.addEventListener('change', function() {
-                value = this.value;
+            function filterRundowns() {
+                const value = filterSelect.value;
                 rundownCards.forEach(function(card) {
                     const subject = card.getAttribute('data-subject');
                     card.style.display = value === 'all' || subject === value ? 'block' : 'none';
                 });
-            });
+            }
+
+            filterSelect.addEventListener('change', filterRundowns);
+
+            filterRundowns(); // Call once on page load to apply the initial filter
         });
     </script>
 @endsection

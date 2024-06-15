@@ -7,6 +7,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RundownController;
 use App\Http\Controllers\TrainerController;
@@ -26,9 +27,7 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['check.password'])->group(function () {
-    Route::get('/', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/forum', [ForumController::class, 'show'])->name('showForum');
     Route::post('/forum/store', [ForumController::class, 'store'])->name('storeForum');
@@ -71,7 +70,9 @@ Route::middleware(['check.password'])->group(function () {
     Route::delete('rundown-details/{rundownDetail}', [RundownController::class, 'destroy'])->name('rundown-details.destroy');
 
     Route::resource('trainer', TrainerController::class);
+    Route::get('/trainer-quiz', [TrainerController::class, 'quiz'])->name('quiz');
 
     Route::get('/trainees/acq', [TraineeController::class, 'showAcq'])->name('showAcq');
     Route::post('/trainees/{id}/edit-totalAcq', [TraineeController::class, 'editTotalAcq'])->name('editTotalAcq');
+
 });

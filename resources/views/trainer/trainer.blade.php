@@ -34,22 +34,27 @@
         }
     </style>
     <div class="container mt-4">
-        <div class="header">
-            <button class="btn btn-primary" id="newTrainerBtn" data-toggle="modal" data-target="#newTrainerModal">New
-                Trainer</button>
+        <div class="header row">
+            <div class="col-md-3">
+                <button class="btn btn-primary" id="newTrainerBtn" data-toggle="modal" data-target="#newTrainerModal">New
+                    Trainer</button>
+            </div>
+            <div class="col-md-5">
+                <input type="text" id="searchBar" class="form-control" placeholder="Search trainers...">
+            </div>
+
         </div>
         <div class="card-container">
             <h2 class="mt-2">Trainers</h2>
             <div class="row justify-content-center">
                 @foreach ($trainers as $trainer)
-                    <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="col-lg-4 col-md-6 mb-4 trainer-card" data-id="{{ $trainer->id }}"
+                        data-code="{{ $trainer->code }}" data-name="{{ $trainer->name }}"
+                        data-generation="{{ $trainer->generation }}" data-position="{{ $trainer->position }}"
+                        data-subject="{{ $trainer->subject }}" data-degree="{{ $trainer->degree }}"
+                        data-binusian="{{ $trainer->binusian }}" data-status="{{ $trainer->status }}">
                         <div class="card h-100 active-trainer" data-toggle="modal"
-                            data-target="#editTrainerModal{{ $trainer->id }}" data-id="{{ $trainer->id }}"
-                            data-code="{{ $trainer->code }}" data-name="{{ $trainer->name }}"
-                            data-generation="{{ $trainer->generation }}" data-position="{{ $trainer->position }}"
-                            data-subject="{{ $trainer->subject }}"
-                            data-profile="{{ asset('storage/' . $trainer->profile) }}"
-                            data-status="{{ $trainer->status }}">
+                            data-target="#editTrainerModal{{ $trainer->id }}">
                             <img src="{{ asset('storage/' . $trainer->profile) }}" alt="Profile Image"
                                 class="card-img-top img-fluid" style="width: auto; height: 40vh; border-radius: 5%">
                             <div class="card-body text-center">
@@ -92,42 +97,48 @@
                                 <div class="form-group">
                                     <label for="edit_name{{ $trainer->id }}">Name:</label>
                                     <input type="text" id="edit_name{{ $trainer->id }}" name="name"
-                                        class="form-control" required value="{{ $trainer->name }}">
+                                        class="form-control" required value="{{ $trainer->name }}"
+                                        value="{{ $trainer->name }}">
                                     <div class="invalid-feedback">Please fill in the name.</div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="edit_generation{{ $trainer->id }}">Generation:</label>
-                                    <input type="text" id="edit_generation{{ $trainer->id }}" name="generation"
-                                        class="form-control" required value="{{ $trainer->generation }}">
-                                    <div class="invalid-feedback">Please fill in the generation.</div>
                                     <div class="suggestions">
-                                        <select class="form-control edit-generation-suggestions"
-                                            data-target-input="#edit_generation{{ $trainer->id }}">
+                                        <select class="form-control generation-suggestions" name="generation"
+                                            id="edit_generation{{ $trainer->id }}" required>
                                             <option value="">Select a generation</option>
                                             @foreach ($trainers->unique('generation') as $trainerOption)
-                                                <option value="{{ $trainerOption->generation }}">
-                                                    {{ $trainerOption->generation }}</option>
+                                                <option value="{{ $trainerOption->generation }}"
+                                                    {{ $trainer->generation == $trainerOption->generation ? 'selected' : '' }}>
+                                                    {{ $trainerOption->generation }}
+                                                </option>
                                             @endforeach
+                                            <option value="other">Other</option>
                                         </select>
                                     </div>
+                                    <input type="text" class="form-control mt-2 d-none other-generation"
+                                        name="other_generation" placeholder="Enter generation">
+                                    <div class="invalid-feedback">Please fill in the generation.</div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="edit_position{{ $trainer->id }}">Position:</label>
-                                    <input type="text" id="edit_position{{ $trainer->id }}" name="position"
-                                        class="form-control" required value="{{ $trainer->position }}">
-                                    <div class="invalid-feedback">Please fill in the position.</div>
                                     <div class="suggestions">
-                                        <select class="form-control position-suggestions"
-                                            data-target-input="#edit_position{{ $trainer->id }}">
+                                        <select class="form-control position-suggestions" name="position"
+                                            id="edit_position{{ $trainer->id }}" required>
                                             <option value="">Select a position</option>
                                             @foreach ($trainers->unique('position') as $trainerOption)
-                                                <option value="{{ $trainerOption->position }}">
+                                                <option value="{{ $trainerOption->position }}"
+                                                    {{ $trainer->position == $trainerOption->position ? 'selected' : '' }}>
                                                     {{ $trainerOption->position }}</option>
                                             @endforeach
+                                            <option value="other">Other</option>
                                         </select>
                                     </div>
+                                    <input type="text" class="form-control mt-2 d-none other-position"
+                                        name="other_position" placeholder="Enter position">
+                                    <div class="invalid-feedback">Please fill in the position.</div>
                                 </div>
 
                                 <div class="form-group">
@@ -184,48 +195,52 @@
                                 <div id="selectedSubjects{{ $trainer->id }}"></div>
 
                                 <div class="form-group">
-                                    <label for="edit_binusian{{ $trainer->id }}">binusian:</label>
-                                    <input type="text" id="edit_binusian{{ $trainer->id }}" name="binusian"
-                                        class="form-control" required value="{{ $trainer->binusian }}">
-                                    <div class="invalid-feedback">Please fill in the binusian.</div>
+                                    <label for="edit_binusian{{ $trainer->id }}">Binusian:</label>
                                     <div class="suggestions">
-                                        <select class="form-control binusian-suggestions"
-                                            data-target-input="#edit_binusian{{ $trainer->id }}">
-                                            <option value="">Select a binusian</option>
+                                        <select class="form-control binusian-suggestions" name="binusian"
+                                            id="edit_binusian{{ $trainer->id }}" required>
+                                            <option value="">Select
+                                                a binusian</option>
                                             @foreach ($trainers->unique('binusian') as $trainerOption)
-                                                <option value="{{ $trainerOption->binusian }}">
-                                                    {{ $trainerOption->binusian }}
-                                                </option>
+                                                <option value="{{ $trainerOption->binusian }}"
+                                                    {{ $trainer->binusian == $trainerOption->binusian ? 'selected' : '' }}>
+                                                    {{ $trainerOption->binusian }}</option>
                                             @endforeach
+                                            <option value="other">Other</option>
                                         </select>
                                     </div>
+                                    <input type="text" class="form-control mt-2 d-none other-binusian"
+                                        name="other_binusian" placeholder="Enter binusian">
+                                    <div class="invalid-feedback">Please fill in the binusian.</div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="edit_degree{{ $trainer->id }}">degree:</label>
-                                    <input type="text" id="edit_degree{{ $trainer->id }}" name="degree"
-                                        class="form-control" required value="{{ $trainer->degree }}">
-                                    <div class="invalid-feedback">Please fill in the degree.</div>
+                                    <label for="edit_degree{{ $trainer->id }}">Degree:</label>
                                     <div class="suggestions">
-                                        <select class="form-control degree-suggestions"
-                                            data-target-input="#edit_degree{{ $trainer->id }}">
-                                            <option value="">Select a degree</option>
+                                        <select class="form-control degree-suggestions" name="degree"
+                                            id="edit_degree{{ $trainer->id }}" required>
+                                            <option value="">Select
+                                                a degree</option>
                                             @foreach ($trainers->unique('degree') as $trainerOption)
-                                                <option value="{{ $trainerOption->degree }}">
-                                                    {{ $trainerOption->degree }}
-                                                </option>
+                                                <option value="{{ $trainerOption->degree }}"
+                                                    {{ $trainer->degree == $trainerOption->degree ? 'selected' : '' }}>
+                                                    {{ $trainerOption->degree }}</option>
                                             @endforeach
+                                            <option value="other">Other</option>
                                         </select>
                                     </div>
+                                    <input type="text" class="form-control mt-2 d-none other-degree"
+                                        name="other_degree" placeholder="Enter degree">
+                                    <div class="invalid-feedback">Please fill in the degree.</div>
                                 </div>
 
 
                                 <div class="form-group">
                                     <label for="profile">Profile Picture</label>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="profile" name="profile"
-                                            onchange="updateFileName('profile', 'profile_label')" required>
-                                        <label class="custom-file-label" id="profile_label" for="profile">Choose
+                                        <input type="file" class="custom-file-input" id="profile{{ $trainer->id }}" name="profile"
+                                            onchange="updateFileName('profile{{ $trainer->id }}', 'profile_label{{ $trainer->id }}')" required>
+                                        <label class="custom-file-label" id="profile_label{{ $trainer->id }}" for="profile">Choose
                                             file...</label>
                                         <div class="invalid-feedback">Please upload a profile picture.</div>
                                     </div>
@@ -236,7 +251,6 @@
                                     value="{{ $trainer->id }}">
 
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                                <button type="button" class="btn btn-danger" id="deleteTrainerBtn">Delete</button>
                             </form>
                         </div>
                     </div>
@@ -251,6 +265,57 @@
                         $('#editTrainerModal{{ $trainer->id }} .subject-checkboxes input[type="checkbox"][value="' +
                             subject.trim() + '"]').prop('checked', true);
                     });
+
+                    $(".position-suggestions").change(function() {
+                        var selectedOption = $(this).val();
+                        if (selectedOption === "other") {
+                            $(this).closest('.form-group').find('.other-position').removeClass('d-none').focus();
+                        } else {
+                            $(this).closest('.form-group').find('.other-position').addClass('d-none');
+                        }
+                    });
+
+                    $(".generation-suggestions").change(function() {
+                        var selectedOption = $(this).val();
+                        if (selectedOption === "other") {
+                            $(this).closest('.form-group').find('.other-generation').removeClass('d-none').focus();
+                        } else {
+                            $(this).closest('.form-group').find('.other-generation').addClass('d-none');
+                        }
+                    });
+
+                    $(".binusian-suggestions").change(function() {
+                        var selectedOption = $(this).val();
+                        if (selectedOption === "other") {
+                            $(this).closest('.form-group').find('.other-binusian').removeClass('d-none').focus();
+                        } else {
+                            $(this).closest('.form-group').find('.other-binusian').addClass('d-none');
+                        }
+                    });
+
+                    $(".degree-suggestions").change(function() {
+                        var selectedOption = $(this).val();
+                        if (selectedOption === "other") {
+                            $(this).closest('.form-group').find('.other-degree').removeClass('d-none').focus();
+                        } else {
+                            $(this).closest('.form-group').find('.other-degree').addClass('d-none');
+                        }
+                    });
+
+                    // $('#editTrainerForm{{ $trainer->id }}').submit(function(event) {
+                    //     if ($('#edit_generation{{ $trainer->id }}').val() === 'other') {
+                    //         $('#edit_generation{{ $trainer->id }}').val($('.other-generation').val());
+                    //     }
+                    //     if ($('#edit_position{{ $trainer->id }}').val() === 'other') {
+                    //         $('#edit_position{{ $trainer->id }}').val($('.other-position').val());
+                    //     }
+                    //     if ($('#edit_binusian{{ $trainer->id }}').val() === 'other') {
+                    //         $('#edit_binusian{{ $trainer->id }}').val($('.other-binusian').val());
+                    //     }
+                    //     if ($('#edit_degree{{ $trainer->id }}').val() === 'other') {
+                    //         $('#edit_degree{{ $trainer->id }}').val($('.other-degree').val());
+                    //     }
+                    // });
                 });
             </script>
         @endforeach
@@ -276,18 +341,22 @@
 
                             <div class="form-group">
                                 <label for="generation">Generation:</label>
-                                <input type="text" id="generation" name="generation" class="form-control" required>
-                                <div class="invalid-feedback">Please fill in the generation.</div>
                                 <div class="suggestions">
-                                    <select class="form-control generation-suggestions">
+                                    <select class="form-control generation-suggestions" name="generation" id="generation"
+                                        required>
                                         <option value="">Select a generation</option>
-                                        @foreach ($trainers->unique() as $trainerOption)
+                                        @foreach ($trainers->unique('generation') as $trainerOption)
                                             <option value="{{ $trainerOption->generation }}">
                                                 {{ $trainerOption->generation }}</option>
                                         @endforeach
+                                        <option value="other">Other</option>
                                     </select>
                                 </div>
+                                <input type="text" class="form-control mt-2 d-none other-generation"
+                                    name="other_generation" placeholder="Enter generation">
+                                <div class="invalid-feedback">Please fill in the generation.</div>
                             </div>
+
                             <div class="form-group">
                                 <label for="name">Name:</label>
                                 <input type="text" id="name" name="name" class="form-control" required>
@@ -296,50 +365,56 @@
 
                             <div class="form-group">
                                 <label for="position">Position:</label>
-                                <input type="text" id="position" name="position" class="form-control position-input"
-                                    required>
-                                <div class="invalid-feedback">Please fill in the position.</div>
                                 <div class="suggestions">
-                                    <select class="form-control position-suggestions">
+                                    <select class="form-control position-suggestions" name="position" id="position"
+                                        required>
                                         <option value="">Select a position</option>
-                                        @foreach ($trainers->unique() as $trainerOption)
+                                        @foreach ($trainers->unique('position') as $trainerOption)
                                             <option value="{{ $trainerOption->position }}">{{ $trainerOption->position }}
                                             </option>
                                         @endforeach
+                                        <option value="other">Other</option>
                                     </select>
                                 </div>
+                                <input type="text" class="form-control mt-2 d-none other-position"
+                                    name="other_position" placeholder="Enter position">
+                                <div class="invalid-feedback">Please fill in the position.</div>
                             </div>
 
                             <div class="form-group">
                                 <label for="binusian">Binusian:</label>
-                                <input type="text" id="binusian" name="binusian" class="form-control binusian-input"
-                                    required>
-                                <div class="invalid-feedback">Please fill in the binusian.</div>
                                 <div class="suggestions">
-                                    <select class="form-control binusian-suggestions">
+                                    <select class="form-control binusian-suggestions" name="binusian" id="binusian"
+                                        required>
                                         <option value="">Select a binusian</option>
-                                        @foreach ($trainers->unique() as $trainerOption)
+                                        @foreach ($trainers->unique('binusian') as $trainerOption)
                                             <option value="{{ $trainerOption->binusian }}">{{ $trainerOption->binusian }}
                                             </option>
                                         @endforeach
+                                        <option value="other">Other</option>
                                     </select>
                                 </div>
+                                <input type="text" class="form-control mt-2 d-none other-binusian"
+                                    name="other_binusian" placeholder="Enter binusian">
+                                <div class="invalid-feedback">Please fill in the binusian.</div>
                             </div>
 
                             <div class="form-group">
                                 <label for="degree">Degree:</label>
-                                <input type="text" id="degree" name="degree" class="form-control degree-input"
-                                    required>
-                                <div class="invalid-feedback">Please fill in the degree.</div>
                                 <div class="suggestions">
-                                    <select class="form-control degree-suggestions">
+                                    <select class="form-control degree-suggestions" name="degree" id="degree"
+                                        required>
                                         <option value="">Select a degree</option>
-                                        @foreach ($trainers->unique() as $trainerOption)
+                                        @foreach ($trainers->unique('degree') as $trainerOption)
                                             <option value="{{ $trainerOption->degree }}">{{ $trainerOption->degree }}
                                             </option>
                                         @endforeach
+                                        <option value="other">Other</option>
                                     </select>
                                 </div>
+                                <input type="text" class="form-control mt-2 d-none other-degree" name="other_degree"
+                                    placeholder="Enter degree">
+                                <div class="invalid-feedback">Please fill in the degree.</div>
                             </div>
 
                             <div class="form-group">
@@ -392,9 +467,9 @@
                             <div class="form-group">
                                 <label for="profile">Profile Picture</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="profile" name="profile"
-                                        onchange="updateFileName('profile', 'profile_label')" required>
-                                    <label class="custom-file-label" id="profile_label" for="profile">Choose
+                                    <input type="file" class="custom-file-input" id="profile_create" name="profile"
+                                        onchange="updateFileName('profile_create', 'profile_label_create')" required>
+                                    <label class="custom-file-label" id="profile_label_create" for="profile">Choose
                                         file...</label>
                                     <div class="invalid-feedback">Please upload a profile picture.</div>
                                 </div>
@@ -408,79 +483,100 @@
         </div>
 
         <script>
-            @foreach ($trainers as $trainer)
-                $('#editTrainerModal{{ $trainer->id }}').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget);
-                    var trainerId = button.data('id');
-                    var code = button.data('code');
-                    var name = button.data('name');
-                    var generation = button.data('generation');
-                    var position = button.data('position');
-                    var subject = button.data('subject');
+            function updateFileName(inputId, labelId) {
+                var input = document.getElementById(inputId);
+                var label = document.getElementById(labelId);
 
-                    var modal = $(this);
-                    modal.find('#edit_code{{ $trainer->id }}').val(code);
-                    modal.find('#edit_name{{ $trainer->id }}').val(name);
-                    modal.find('#edit_generation{{ $trainer->id }}').val(generation);
-                    modal.find('#edit_position{{ $trainer->id }}').val(position);
-                    modal.find('#edit_trainer_id{{ $trainer->id }}').val(trainerId);
+                if (input.files.length > 0) {
+                    var fileName = input.files[0].name;
+                    label.textContent = fileName;
+                } else {
+                    label.textContent = "Choose file...";
+                }
+            }
 
-                    var subjectsArray = subject.split(',').map(function(item) {
-                        return item.trim();
-                    });
+            document.getElementById('searchBar').addEventListener('input', function() {
+                let filter = this.value.toLowerCase();
+                let cards = document.querySelectorAll('.trainer-card');
 
-                    subjectsArray.forEach(function(subject) {
-                        modal.find('.subject-checkboxes input[type="checkbox"][value="' + subject + '"]').prop(
-                            'checked', true);
-                    });
+                cards.forEach(function(card) {
+                    let code = card.getAttribute('data-code').toLowerCase();
+                    let name = card.getAttribute('data-name').toLowerCase();
+                    let generation = card.getAttribute('data-generation').toLowerCase();
+                    let position = card.getAttribute('data-position').toLowerCase();
+                    let subject = card.getAttribute('data-subject').toLowerCase();
+                    let degree = card.getAttribute('data-degree').toLowerCase();
+                    let binusian = card.getAttribute('data-binusian').toLowerCase();
+
+                    if (code.includes(filter) || name.includes(filter) || generation.includes(filter) ||
+                        position.includes(filter) || subject.includes(filter) || degree.includes(filter) ||
+                        binusian.includes(filter)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
                 });
+            });
 
-                window.updateFileName = function(inputId, labelId) {
-                    const input = document.getElementById(inputId);
-                    const label = document.getElementById(labelId);
-                    const fileName = input.files[0].name;
-                    label.innerText = fileName;
-                };
-            @endforeach
 
             $(document).ready(function() {
                 const uniquePositions = @json(array_values(array_unique($trainers->pluck('position')->toArray())));
                 const uniqueSubjects = @json(array_values(array_unique($trainers->pluck('subject')->toArray())));
                 const uniqueGenerations = @json(array_values(array_unique($trainers->pluck('generation')->toArray())));
+                const uniqueBinusians = @json(array_values(array_unique($trainers->pluck('binusian')->toArray())));
+                const uniqueDegrees = @json(array_values(array_unique($trainers->pluck('degree')->toArray())));
 
-                $("#position, #edit_position").autocomplete({
-                    source: uniquePositions
-                });
-
-                $("#subject, #edit_subject").autocomplete({
-                    source: uniqueSubjects
-                });
-
-                $("#generation, #edit_generation").autocomplete({
-                    source: uniqueGenerations
-                });
-
-                $('.position-suggestions, .subject-suggestions, .generation-suggestions, .edit-generation-suggestions, .edit-subject-suggestions')
-                    .change(function() {
-                        var selectedOption = $(this).val();
-                        var input = $(this).closest('.form-group').find('input');
-                        if (selectedOption === 'other') {
-                            input.val('');
-                            input.prop('disabled', false).focus();
-                        } else {
-                            input.val(selectedOption).prop('disabled', true);
-                        }
-                    });
-
-                $('.position-input, #edit_position, #edit_subject, #edit_generation').on('input', function() {
-                    var inputValue = $(this).val();
-                    var select = $(this).closest('.form-group').find('select');
-                    if (inputValue.trim() !== '') {
-                        select.val('other');
+                $(".position-suggestions").change(function() {
+                    var selectedOption = $(this).val();
+                    if (selectedOption === "other") {
+                        $(this).closest('.form-group').find('.other-position').removeClass('d-none').focus();
+                    } else {
+                        $(this).closest('.form-group').find('.other-position').addClass('d-none');
                     }
                 });
 
+                $(".generation-suggestions").change(function() {
+                    var selectedOption = $(this).val();
+                    if (selectedOption === "other") {
+                        $(this).closest('.form-group').find('.other-generation').removeClass('d-none').focus();
+                    } else {
+                        $(this).closest('.form-group').find('.other-generation').addClass('d-none');
+                    }
+                });
 
+                $(".binusian-suggestions").change(function() {
+                    var selectedOption = $(this).val();
+                    if (selectedOption === "other") {
+                        $(this).closest('.form-group').find('.other-binusian').removeClass('d-none').focus();
+                    } else {
+                        $(this).closest('.form-group').find('.other-binusian').addClass('d-none');
+                    }
+                });
+
+                $(".degree-suggestions").change(function() {
+                    var selectedOption = $(this).val();
+                    if (selectedOption === "other") {
+                        $(this).closest('.form-group').find('.other-degree').removeClass('d-none').focus();
+                    } else {
+                        $(this).closest('.form-group').find('.other-degree').addClass('d-none');
+                    }
+                });
+
+                $('#trainerForm, @foreach ($trainers as $trainer)#editTrainerForm{{ $trainer->id }}, @endforeach')
+                    .submit(function(event) {
+                        if ($('#generation').val() === 'other') {
+                            $('input[name="generation"]').val($('.other-generation').val());
+                        }
+                        if ($('#position').val() === 'other') {
+                            $('input[name="position"]').val($('.other-position').val());
+                        }
+                        if ($('#binusian').val() === 'other') {
+                            $('input[name="binusian"]').val($('.other-binusian').val());
+                        }
+                        if ($('#degree').val() === 'other') {
+                            $('input[name="degree"]').val($('.other-degree').val());
+                        }
+                    });
             });
         </script>
     </div>
