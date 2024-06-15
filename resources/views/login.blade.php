@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authentication</title>
+    <link rel="icon" href="{{ asset('assets/images/narlogo.png') }}" type="image/x-icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -83,16 +84,16 @@
     <div class="container">
         <canvas id="canvas"></canvas>
         <div class="login-container">
-            <h2>Enter the pass key</h2>
+            <h2>Password Angkatan 24-2</h2>
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="hayolo passnya apa">
                 </div>
                 @if ($errors->has('password'))
-                    <div class="error-message mb-4">{{ $errors->first('password') }}</div>
+                    <div class="error-message mb-4 font-weight-bold">{{ $errors->first('password') }}</div>
                 @endif
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary">Meluncur</button>
             </form>
         </div>
     </div>

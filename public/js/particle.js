@@ -1,31 +1,34 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const canvas = document.getElementById("canvas"); // Ambil elemen canvas
+const ctx = canvas.getContext("2d"); // Dapetin context 2D
+canvas.width = window.innerWidth; // Set lebar canvas
+canvas.height = window.innerHeight; // Set tinggi canvas
 
-let particlesArray;
+let particlesArray; // Array buat partikel
 const mouse = {
     x: null,
     y: null,
-    radius: 100,
-    click: false
-};
+    radius: 70,
+    click: false,
+}; // Objek buat posisi dan klik mouse
 
-window.addEventListener('mousemove', function (event) {
-    mouse.x = event.x;
-    mouse.y = event.y;
+window.addEventListener("mousemove", (event) => {
+    mouse.x = event.x; 
+    mouse.y = event.y; 
 });
 
-window.addEventListener('mousedown', function (event) {
-    if (event.button === 0) { // Check if the left mouse button is clicked
-        mouse.click = true;
+window.addEventListener("mousedown", (event) => {
+    if (event.button === 0) {
+        // Kalo tombol kiri diklik
+        mouse.click = true; // Set klik jadi true
     }
 });
 
-window.addEventListener('mouseup', function () {
-    mouse.click = false;
+// Dengerin lepas klik mouse
+window.addEventListener("mouseup", () => {
+    mouse.click = false; // Set klik jadi false
 });
 
+// Kelas buat partikel
 class Particle {
     constructor(x, y, directionX, directionY, size, color) {
         this.x = x;
@@ -35,8 +38,10 @@ class Particle {
         this.size = size;
         this.color = color;
         this.history = [{ x: this.x, y: this.y }];
-        this.maxHistory = 30;
+        this.maxHistory = 30; // Maks panjang jejak
     }
+
+    // Gambar partikel
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
@@ -45,6 +50,7 @@ class Particle {
         ctx.closePath();
     }
 
+    // Gambar jejak partikel
     drawTail() {
         for (let i = 0; i < this.history.length - 1; i++) {
             const opacity = (i + 1) / this.history.length;
@@ -57,11 +63,14 @@ class Particle {
         }
     }
 
+    // Update posisi partikel
     update() {
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
+        // Kalo mouse diklik dan deket, gerakin partikel
+        // Kasi efek mantulin 
         if (mouse.click && distance < mouse.radius) {
             const angle = Math.atan2(dy, dx);
             const speed = 1;
@@ -69,16 +78,17 @@ class Particle {
             this.directionY = -Math.sin(angle) * speed;
         } else if (distance < mouse.radius) {
             const angle = Math.atan2(dy, dx);
-            const speed = 1; 
+            const speed = 1;
             this.directionX = Math.cos(angle) * speed;
             this.directionY = Math.sin(angle) * speed;
         } else {
             if (this.directionX === 0 && this.directionY === 0) {
-                this.directionX = (Math.random() * 2) - 1;
-                this.directionY = (Math.random() * 2) - 1;
+                this.directionX = Math.random() * 2 - 1;
+                this.directionY = Math.random() * 2 - 1;
             }
         }
 
+        // Pantulin partikel kalo keluar batas
         if (this.x > canvas.width || this.x < 0) {
             this.directionX = -this.directionX;
         }
@@ -86,43 +96,52 @@ class Particle {
             this.directionY = -this.directionY;
         }
 
-        this.x += this.directionX;
-        this.y += this.directionY;
+        this.x += this.directionX; // Update posisi x
+        this.y += this.directionY; // Update posisi y
 
-        this.history.push({ x: this.x, y: this.y });
+        this.history.push({ x: this.x, y: this.y }); // Tambahin posisi ke jejak
         if (this.history.length > this.maxHistory) {
-            this.history.shift();
+            this.history.shift(); // Buang jejak pertama kalo udah kepanjangan
         }
 
-        this.drawTail();
-        this.draw();
+        this.drawTail(); // Gambar efek roket
+        this.draw(); // Gambar partikel
     }
 }
 
+// Inisialisasi partikel
 function init() {
-    particlesArray = [];
-    let numberOfParticles = (canvas.height * canvas.width) / 15000;
+    particlesArray = []; // Kosongin array partikel
+    let numberOfParticles = (canvas.height * canvas.width) / 15000; // Hitung jumlah partikel
     for (let i = 0; i < numberOfParticles; i++) {
-        let size = (Math.random() * 2) + 1;
-        let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-        let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-        let directionX = (Math.random() * 2) - 1;
-        let directionY = (Math.random() * 2) - 1;
-        let color = '#fff';
+        let size = Math.random() * 2 + 1; // Ukuran random
+        let x = Math.random() * (innerWidth - size * 2 - size * 2) + size * 2; // Posisi x random
+        let y = Math.random() * (innerHeight - size * 2 - size * 2) + size * 2; // Posisi y random
+        let directionX = Math.random() * 2 - 1; // Arah x random
+        let directionY = Math.random() * 2 - 1; // Arah y random
+        let color = "#fff"; // Warna putih
 
-        particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        particlesArray.push(
+            new Particle(x, y, directionX, directionY, size, color)
+        ); // Tambahin partikel ke array
     }
 }
 
+// Fungsi buat hubungin partikel dengan garis
 function connect() {
     for (let a = 0; a < particlesArray.length; a++) {
         for (let b = a + 1; b < particlesArray.length; b++) {
-            let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
-                + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-            if (distance < (canvas.width / 8) * (canvas.height / 8)) { // Reduced distance threshold
-                let opacityValue = 1 - (distance / 10000); // Adjusted opacity calculation
-                ctx.strokeStyle = 'rgba(255,255,255,' + opacityValue + ')';
-                ctx.lineWidth = 1;
+            // holy shit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bruteforce
+            let distance =
+                (particlesArray[a].x - particlesArray[b].x) *
+                    (particlesArray[a].x - particlesArray[b].x) +
+                (particlesArray[a].y - particlesArray[b].y) *
+                    (particlesArray[a].y - particlesArray[b].y);
+            if (distance < (canvas.width / 8) * (canvas.height / 8)) {
+                // Cek jarak partikel
+                let opacityValue = 1 - distance / 10000; // Hitung opacity
+                ctx.strokeStyle = "rgba(255,255,255," + opacityValue + ")"; // Set warna garis
+                ctx.lineWidth = 1; // Set lebar garis
                 ctx.beginPath();
                 ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
                 ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
@@ -132,28 +151,31 @@ function connect() {
     }
 }
 
+// Fungsi buat animasi
 function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#334D4D';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Bersihin canvas
+    ctx.fillStyle = "#334D4D"; // Set warna background
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Gambar background
     for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].update();
+        particlesArray[i].update(); // Update posisi partikel
     }
-    connect();
-    requestAnimationFrame(animate);
+    connect(); // Hubungin partikel
+    requestAnimationFrame(animate); // Loop animasi
 }
 
-window.addEventListener('resize', function () {
+// Dengerin perubahan ukuran jendela
+window.addEventListener("resize", () => {
     canvas.width = innerWidth;
     canvas.height = innerHeight;
     mouse.radius = (canvas.height / 80) * (canvas.width / 80);
-    init();
+    init(); // Inisialisasi ulang partikel
 });
 
-window.addEventListener('mouseout', function () {
+// Dengerin mouse keluar dari jendela
+window.addEventListener("mouseout", () => {
     mouse.x = undefined;
     mouse.y = undefined;
 });
 
-init();
-animate();
+init(); 
+animate(); 

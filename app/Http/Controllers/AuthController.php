@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -18,14 +19,16 @@ class AuthController extends Controller
         ]);
 
         $password = $request->input('password');
+        $hashedPassword = bcrypt('242gacor');
 
-        if ($password === '242gacor') {
+        if (Hash::check($password, $hashedPassword)) {
             session(['authenticated' => true]);
             return redirect()->route('home')->with('success', 'Login successful!');
         }
 
-        return back()->withErrors(['password' => 'Incorrect password. Please try again.']);
+        return back()->withErrors(['password' => 'Password salah, web ini khusus 24-2 saja kak...']);
     }
+
 
     public function logout()
     {
