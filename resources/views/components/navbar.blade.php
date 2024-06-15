@@ -64,7 +64,8 @@
                 ],
                 typeSpeed: 40,
                 backSpeed: 20,
-                loop: true
+                loop: true,
+                showCursor: false
             });
         });
     </script>

@@ -23,9 +23,11 @@
         </div>
 
         <div class="card-container">
-            @php
-                $lastProjectId = $bpprojects->last()->id;
-            @endphp
+            @if ($bpprojects->count() > 0)
+                @php
+                    $lastProjectId = $bpprojects->last()->id;
+                @endphp
+            @endif
             <div class="row" id="bpprojects">
                 @foreach ($bpprojects->reverse() as $bpproject)
                     <div class="col-md-4 mb-4 project-card" data-subject="{{ $bpproject->subject }}"
@@ -193,8 +195,8 @@
 
                                     <div class="form-group d-none">
                                         <label for="bpnotes">Notes:</label>
-                                        <input type="text" id="bpnotes" name="bpnotes" class="form-control" value="-"
-                                            required>
+                                        <input type="text" id="bpnotes" name="bpnotes" class="form-control"
+                                            value="-" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

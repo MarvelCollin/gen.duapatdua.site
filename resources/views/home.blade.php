@@ -3,6 +3,9 @@
 @section('content')
     <div class="container mt-4">
         <div class="row">
+            <div class="col-12 mb-4 text-center">
+                    <h1 class="display-4 font-weight-bold" id="welcome"></h1>
+            </div>
             <div class="col-md-6 mb-4">
                 <a href="{{ route('rundowns.index') }}" class="card-link text-decoration-none">
                     <div class="card shadow-lg border-0">
@@ -36,7 +39,7 @@
             <div class="col-md-6 mb-4">
                 @if ($latestCaseSolves->isEmpty())
                     <div class="card shadow-lg text-center border-0">
-                        <div class="card-header bg-success text-white">
+                        <div class="card-header bg-danger text-white">
                             <h3>Active Case Solve</h3>
                         </div>
                         <div class="card-body">
@@ -45,8 +48,7 @@
                     </div>
                 @else
                     @foreach ($latestCaseSolves as $caseSolve)
-                        <a href="{{ isset($caseSolve) ? route('casesolve.show', $caseSolve->id) : route('casesolve.index') }}"
-                            class="card-link text-decoration-none">
+                        <a href="{{ route('casesolve.show', $caseSolve->id) }}" class="card-link text-decoration-none">
                             <div class="card shadow-lg text-center mb-4 border-0">
                                 <div class="card-header bg-success text-white">
                                     <h3>Active Case Solve</h3>
@@ -57,7 +59,8 @@
                                             <h2 class="font-weight-bold">{{ $caseSolve->title }}</h2>
                                             <h4 class="mb-1"><strong>{{ $caseSolve->subject }}</strong></h4>
                                             <h4 class="mb-3"><strong>Session:</strong> {{ $caseSolve->session }}</h4>
-                                            <p><strong>Dibuat pada:</strong> {{ $caseSolve->created_at->format('Y-m-d H:i:s') }}</p>
+                                            <p><strong>Dibuat pada:</strong>
+                                                {{ $caseSolve->created_at->format('Y-m-d H:i:s') }}</p>
                                         </li>
                                     </ul>
                                 </div>
@@ -70,4 +73,16 @@
     </div>
 
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var typed = new Typed('#welcome', {
+                strings: ["Welcome, Angkatan 24-2 Tercinta !", "Welcome, Angkatan 24-2 Tergacor !", "Welcome, Angkatan 24-2 Tersolid !"],
+                typeSpeed: 90,
+                backSpeed: 60,
+                showCursor: false,
+                smartBackspace: true,
+                loop: true
+            });
+        });
+    </script>
 @endsection
