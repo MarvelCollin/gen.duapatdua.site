@@ -89,11 +89,14 @@ class TraineeController extends Controller
     }
 
 
-    public function showAcq()
+    public function showAcq(Request $request)
     {
-        $trainees = Trainee::all();
+        $sortColumn = $request->get('sort_by', 'trainee_number');
+        $sortDirection = $request->get('sort_direction', 'asc'); 
 
-        return view('acq', compact('trainees'));
+        $trainees = Trainee::orderBy($sortColumn, $sortDirection)->get();
+
+        return view('acq', compact('trainees', 'sortColumn', 'sortDirection'))->with('success', 'Berhasil mengganti sortnya kak !');
     }
 
     public function editTotalAcq(Request $request, $id)

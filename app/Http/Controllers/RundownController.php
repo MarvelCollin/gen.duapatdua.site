@@ -14,6 +14,7 @@ class RundownController extends Controller
         $rundownDetails = RundownDetail::all();
         return view('bp.bprundown', compact('rundowns', 'rundownDetails'));
     }
+
     public function store(Request $request)
     {
         $request->validate([

@@ -73,5 +73,5 @@ Route::middleware(['check.password'])->group(function () {
     Route::resource('trainer', TrainerController::class);
 
     Route::get('/trainees/acq', [TraineeController::class, 'showAcq'])->name('showAcq');
-    Route::post('/trainees/{id}/edit-totalAcq', [TraineeController::class, 'editTotalAcq'])->name('trainees.editTotalAcq');
+    Route::post('/trainees/{id}/edit-totalAcq', [TraineeController::class, 'editTotalAcq'])->name('editTotalAcq');
 });

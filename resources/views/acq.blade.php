@@ -1,5 +1,5 @@
 @extends('components.navbar')
-
+<title>Acquaintance</title>
 @section('content')
     <div class="container">
         <h1 class="mt-4 mb-4">Kenalan</h1>
@@ -10,38 +10,38 @@
             </div>
         @endif
 
-        <!-- Select option for sorting -->
         <div class="form-group">
-            <label for="sortSelect">Sort By:</label>
-            <select class="form-control" id="sortSelect">
-                <option value="0">Trainee Number</option>
-                <option value="2">Total Acq</option>
-            </select>
+            <form id="sortForm" action="{{ route('showAcq') }}" method="GET">
+                <label for="sortSelect">Sort By:</label>
+                <select class="form-control" id="sortSelect" name="sort_by" onchange="document.getElementById('sortForm').submit();">
+                    <option value="trainee_number" {{ request('sort_by') == 'trainee_number' ? 'selected' : '' }}>Trainee Number</option>
+                    <option value="totalAcq" {{ request('sort_by') == 'totalAcq' ? 'selected' : '' }}>Total Acq</option>
+                </select>
+                <select class="form-control mt-2" id="sortDirection" name="sort_direction" onchange="document.getElementById('sortForm').submit();">
+                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>Ascending (Kecil -> Besar)</option>
+                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>Descending (Besar -> Kecil)</option>
+                </select>
+                <input type="text" id="search" name="search" class="form-control mt-3" placeholder="Search" value="{{ request('search') }}">
+            </form>
         </div>
-
-        <input type="text" id="search" class="form-control mb-3" placeholder="Search">
 
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="trainee-table">
                 <thead class="thead-light">
                     <tr>
-                        <th>
-                            <a href="#" onclick="sortTable('trainee-table')">Trainee Number</a>
-                        </th>
+                        <th class="trainee_number">Trainee Number</th>
                         <th>Name</th>
-                        <th>
-                            <a href="#" onclick="sortTable('trainee-table')">Total Acq</a>
-                        </th>
+                        <th class="totalAcq">Total Acq</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="trainee-tbody">
                     @foreach($trainees as $trainee)
                         <tr>
-                            <td>{{ $trainee->trainee_number }}</td>
+                            <td class="trainee_number">{{ $trainee->trainee_number }}</td>
                             <td>{{ $trainee->name }}</td>
-                            <td>
-                                <form id="form-{{ $trainee->id }}" action="{{ route('trainees.editTotalAcq', $trainee->id) }}" method="POST">
+                            <td class="totalAcq">
+                                <form id="form-{{ $trainee->id }}" action="{{ route('editTotalAcq', $trainee->id) }}" method="POST">
                                     @csrf
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -65,12 +65,19 @@
     </div>
 
     <script>
-        document.getElementById('search').addEventListener('input', function() {
-            const filter = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#trainee-tbody tr');
+        document.getElementById('search').addEventListener('keyup', function() {
+            searchTable();
+        });
+
+        function searchTable() {
+            const input = document.getElementById('search');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('trainee-table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.rows);
 
             rows.forEach(row => {
-                const traineeNumber = row.cells[0].innerText.toLowerCase();
+                const traineeNumber = row.querySelector('.trainee_number').innerText.toLowerCase();
                 const name = row.cells[1].innerText.toLowerCase();
                 if (traineeNumber.includes(filter) || name.includes(filter)) {
                     row.style.display = '';
@@ -78,66 +85,13 @@
                     row.style.display = 'none';
                 }
             });
-        });
+        }
 
         function changeTotalAcq(id, delta) {
             const input = document.getElementById('totalAcq-' + id);
-            let currentValue = parseInt(input.value);
-            const newValue = currentValue + delta;
-            if (newValue >= 0) {
-                input.value = newValue;
-            }
-        }
-
-        function sortTable(tableId) {
-            const table = document.getElementById(tableId);
-            const sortSelect = document.getElementById('sortSelect');
-            const n = parseInt(sortSelect.value); // Get the selected option value
-            let switching = true;
-            let dir = "asc";
-            let switchcount = 0;
-
-            while (switching) {
-                switching = false;
-                const rows = table.rows;
-                for (let i = 1; i < (rows.length - 1); i++) {
-                    let shouldSwitch = false;
-                    const x = rows[i].getElementsByTagName("TD")[n];
-                    const y = rows[i + 1].getElementsByTagName("TD")[n];
-                    let cmpX = x.innerHTML.toLowerCase();
-                    let cmpY = y.innerHTML.toLowerCase();
-
-                    if (n === 0) { 
-                        cmpX = parseInt(cmpX.substring(1));
-                        cmpY = parseInt(cmpY.substring(1));
-                    } else if (n === 2) { 
-                        cmpX = parseInt(cmpX);
-                        cmpY = parseInt(cmpY);
-                    }
-
-                    if (dir === "asc") {
-                        if (cmpX > cmpY) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir === "desc") {
-                        if (cmpX < cmpY) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
+            let newValue = parseInt(input.value) + delta;
+            if (newValue < 0) newValue = 0;
+            input.value = newValue;
         }
     </script>
 @endsection
