@@ -3,8 +3,8 @@
 @section('content')
     <div class="container">
         <h1 class="mt-4 mb-4">Kenalan</h1>
-        
-        @if(session('success'))
+
+        @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
@@ -13,15 +13,21 @@
         <div class="form-group">
             <form id="sortForm" action="{{ route('showAcq') }}" method="GET">
                 <label for="sortSelect">Sort By:</label>
-                <select class="form-control" id="sortSelect" name="sort_by" onchange="document.getElementById('sortForm').submit();">
-                    <option value="trainee_number" {{ request('sort_by') == 'trainee_number' ? 'selected' : '' }}>Trainee Number</option>
+                <select class="form-control" id="sortSelect" name="sort_by"
+                    onchange="document.getElementById('sortForm').submit();">
+                    <option value="trainee_number" {{ request('sort_by') == 'trainee_number' ? 'selected' : '' }}>Trainee
+                        Number</option>
                     <option value="totalAcq" {{ request('sort_by') == 'totalAcq' ? 'selected' : '' }}>Total Acq</option>
                 </select>
-                <select class="form-control mt-2" id="sortDirection" name="sort_direction" onchange="document.getElementById('sortForm').submit();">
-                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>Ascending (Kecil -> Besar)</option>
-                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>Descending (Besar -> Kecil)</option>
+                <select class="form-control mt-2" id="sortDirection" name="sort_direction"
+                    onchange="document.getElementById('sortForm').submit();">
+                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>Ascending (Kecil ->
+                        Besar)</option>
+                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>Descending (Besar ->
+                        Kecil)</option>
                 </select>
-                <input type="text" id="search" name="search" class="form-control mt-3" placeholder="Search" value="{{ request('search') }}">
+                <input type="text" id="search" name="search" class="form-control mt-3" placeholder="Search"
+                    value="{{ request('search') }}">
             </form>
         </div>
 
@@ -36,28 +42,36 @@
                     </tr>
                 </thead>
                 <tbody id="trainee-tbody">
-                    @foreach($trainees as $trainee)
-                        <tr>
-                            <td class="trainee_number">{{ $trainee->trainee_number }}</td>
-                            <td>{{ $trainee->name }}</td>
-                            <td class="totalAcq">
-                                <form id="form-{{ $trainee->id }}" action="{{ route('editTotalAcq', $trainee->id) }}" method="POST">
-                                    @csrf
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-outline-secondary" onclick="changeTotalAcq({{ $trainee->id }}, -1)">-</button>
+                    @foreach ($trainees as $trainee)
+                        @if ($trainee->status == 'active')
+                            <tr>
+                                <td class="trainee_number">{{ $trainee->trainee_number }}</td>
+                                <td>{{ $trainee->name }}</td>
+                                <td class="totalAcq">
+                                    <form id="form-{{ $trainee->id }}" action="{{ route('editTotalAcq', $trainee->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="changeTotalAcq({{ $trainee->id }}, -1)">-</button>
+                                            </div>
+                                            <input type="number" name="totalAcq" id="totalAcq-{{ $trainee->id }}"
+                                                value="{{ $trainee->totalAcq }}" class="form-control text-center"
+                                                min="0" readonly>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="changeTotalAcq({{ $trainee->id }}, 1)">+</button>
+                                            </div>
                                         </div>
-                                        <input type="number" name="totalAcq" id="totalAcq-{{ $trainee->id }}" value="{{ $trainee->totalAcq }}" class="form-control text-center" min="0" readonly>
-                                        <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary" onclick="changeTotalAcq({{ $trainee->id }}, 1)">+</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </td>
-                            <td>
-                                <button type="submit" form="form-{{ $trainee->id }}" class="btn btn-primary">Update</button>
-                            </td>
-                        </tr>
+                                    </form>
+                                </td>
+                                <td>
+                                    <button type="submit" form="form-{{ $trainee->id }}"
+                                        class="btn btn-primary">Update</button>
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>

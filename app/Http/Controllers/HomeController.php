@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Rundown;
 use Illuminate\Http\Request;
 use App\Models\RundownDetail;
+use App\Models\CaseSolve;
 
 class HomeController extends Controller
 {
@@ -18,6 +19,11 @@ class HomeController extends Controller
             $rundownDetails = collect();
         }
 
-        return view('home', compact('latestRundown', 'rundownDetails'));
+        $currentTime = now();
+
+        $twoHoursAgo = $currentTime->subHours(2);
+        $latestCaseSolves = CaseSolve::where('created_at', '>=', $twoHoursAgo)->get();
+
+        return view('home', compact('latestRundown', 'rundownDetails', 'latestCaseSolves'));
     }
 }

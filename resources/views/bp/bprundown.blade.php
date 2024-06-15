@@ -75,7 +75,7 @@
                             @method('PUT')
                             @csrf
                             <div class="modal-header">
-                                <h5 class="modal-title" id="createRundownModalLabel">Add New Subject</h5>
+                                <h5 class="modal-title" id="createRundownModalLabel">Edit Activities</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -113,47 +113,42 @@
                                 <div class="form-group">
                                     <div class="edit-activity-container">
                                         <div class="activity-row row mt-2">
-                                            <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
-                                            <div class="col-md-2">
-                                                Start
-                                            </div>
-                                            <div class="col-md-2">
-                                                End
-                                            </div>
-                                            <div class="col-md-6">
-                                                Activity
-                                            </div>
-                                         
+                                            <div class="col-md-2">Start</div>
+                                            <div class="col-md-2">End</div>
+                                            <div class="col-md-6">Activity</div>
                                         </div>
-                                        @foreach ($rundownDetails->where('rundown_id', $rundown->id) as $index => $detail)
-                                            <div class="activity-row row mt-2">
-                                                <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="edit_start[]"
-                                                        placeholder="Start" value="{{ $detail->start }}" required>
+                                        @if ($rundownDetails->where('rundown_id', $rundown->id)->count() > 0)
+                                            @foreach ($rundownDetails->where('rundown_id', $rundown->id) as $index => $detail)
+                                                <div class="activity-row row mt-2">
+                                                    <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
+                                                    <div class="col-md-2">
+                                                        <input type="text" class="form-control" name="edit_start[]"
+                                                            placeholder="Start" value="{{ $detail->start }}" required>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="text" class="form-control" name="edit_end[]"
+                                                            placeholder="End" value="{{ $detail->end }}" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" name="edit_activity[]"
+                                                            placeholder="Activity" value="{{ $detail->activity }}"
+                                                            required>
+                                                    </div>
+                                                    <div
+                                                        class="col-md-1 ml-2 d-flex align-items-center justify-content-center">
+                                                        <button type="button"
+                                                            class="btn btn-danger remove-activity mr-3">Remove</button>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" class="form-control" name="edit_end[]"
-                                                        placeholder="End" value="{{ $detail->end }}" required>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <input type="text" class="form-control" name="edit_activity[]"
-                                                        placeholder="Activity" value="{{ $detail->activity }}" required>
-                                                </div>
-                                                <div class="col-md-1 ml-2 d-flex align-items-center justify-content-center">
-                                                    <button type="button"
-                                                        class="btn btn-danger remove-activity mr-3">Remove</button>
-                                                </div>
-                                            </div>
-                                        @endforeach
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
-
                                 <button type="button" class="btn btn-primary add-edit-activity">Add More Activity</button>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Edit</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
                         </form>
                     </div>
@@ -205,33 +200,43 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <script>
-        $(document).on("click", ".add-edit-activity", function() {
-            var newRow = `
-        <div class="activity-row row mt-2">
-            <div class="col-md-2">
-                <input type="text" class="form-control" name="edit_start[]" placeholder="Start" required>
-            </div>
-            <div class="col-md-2">
-                <input type="text" class="form-control" name="edit_end[]" placeholder="End" required>
-            </div>
-            <div class="col-md-6">
-                <input type="text" class="form-control" name="edit_activity[]" placeholder="Activity" required>
-            </div>
-            <div class="col-md-1 ml-2 d-flex align-items-center justify-content-center">
-                <button type="button" class="btn btn-danger remove-activity mr-3">Remove</button>
-            </div>
-        </div>
-    `;
-            $(this).closest('.modal-content').find('.edit-activity-container').append(newRow);
-        });
+        $(document).ready(function() {
+            // Automatically add one activity row when the modal is loaded
+            $('.modal').on('shown.bs.modal', function() {
+                var modal = $(this);
+                if (modal.find('.edit-activity-container .activity-row').length === 0) {
+                    modal.find('.add-edit-activity').trigger('click');
+                }
+            });
 
-        $(document).on("click", ".remove-activity", function() {
-            $(this).closest('.activity-row').remove();
-        });
+            // Add activity row
+            $(document).on("click", ".add-edit-activity", function() {
+                var newRow = `
+                    <div class="activity-row row mt-2">
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" name="edit_start[]" placeholder="Start" required>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" name="edit_end[]" placeholder="End" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="edit_activity[]" placeholder="Activity" required>
+                        </div>
+                        <div class="col-md-1 ml-2 d-flex align-items-center justify-content-center">
+                            <button type="button" class="btn btn-danger remove-activity mr-3">Remove</button>
+                        </div>
+                    </div>
+                `;
+                $(this).closest('.modal-content').find('.edit-activity-container').append(newRow);
+            });
 
-        document.addEventListener('DOMContentLoaded', function() {
+            // Remove activity row
+            $(document).on("click", ".remove-activity", function() {
+                $(this).closest('.activity-row').remove();
+            });
+
+            // Filter rundown cards based on selected subject
             const filterSelect = document.getElementById('filter');
             const rundownCards = document.querySelectorAll('.rundown-card');
 
@@ -244,7 +249,6 @@
             }
 
             filterSelect.addEventListener('change', filterRundowns);
-
             filterRundowns(); // Call once on page load to apply the initial filter
         });
     </script>

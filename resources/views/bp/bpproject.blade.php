@@ -9,14 +9,13 @@
                     <div class="d-flex justify-content-end align-items-center">
                         <div class="row ">
                             <a href="{{ route('rundowns.index') }}" class="btn btn-primary mr-3 mt-2">Rundowns</a>
-
                             <button class="btn btn-primary mr-3 mt-2" id="newBpprojectBtn" data-toggle="modal"
                                 data-target="#newBpprojectModal">New BP Project</button>
-                            <button class="btn btn-primary mr-3 mt-2" data-toggle="modal" data-target="#teamModal">Teams</button>
+                            <button class="btn btn-primary mr-3 mt-2" data-toggle="modal"
+                                data-target="#teamModal">Teams</button>
                         </div>
                         <div class="search-container">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Search...">
-                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="searchBar" class="form-control" placeholder="Search projects...">
                         </div>
                     </div>
                 </div>
@@ -24,20 +23,24 @@
         </div>
 
         <div class="card-container">
+            @php
+                $lastProjectId = $bpprojects->last()->id;
+            @endphp
             <div class="row" id="bpprojects">
                 @foreach ($bpprojects->reverse() as $bpproject)
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
+                    <div class="col-md-4 mb-4 project-card" data-subject="{{ $bpproject->subject }}"
+                        data-title="{{ $bpproject->bptitle }}" data-date="{{ $bpproject->created_at->format('d F Y') }}">
+                        <div class="card  {{ $bpproject->id == $lastProjectId ? 'bg-success text-white' : '' }}">
                             <div class="card-body animate__animated animate__fadeIn">
                                 <h5 class="card-title text-center">{{ $bpproject->subject }}</h5>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <p class="card-text">title: <strong>{{ $bpproject->bptitle }}</strong></p>
+                                        <p class="card-text">Title: <strong>{{ $bpproject->bptitle }}</strong></p>
                                         <p class="card-text">{{ $bpproject->created_at->format('d F Y') }}</p>
                                     </div>
                                 </div>
                                 <div class="d-flex text-center justify-content-between align-items-center mt-3">
-                                    <a href="{{ route('bpprojects.show', $bpproject->id) }}" class="btn btn-success">View
+                                    <a href="{{ route('bpprojects.show', $bpproject->id) }}" class="btn btn-primary">View
                                         Progress</a>
                                     <button class="btn btn-primary editBpprojectBtn" data-toggle="modal"
                                         data-target="#editBpprojectModal_{{ $bpproject->id }}">Edit BP Project</button>
@@ -67,7 +70,6 @@
                                                     <input type="text" id="bptitle" name="bptitle" class="form-control"
                                                         value="{{ $bpproject->bptitle }}">
                                                 </div>
-
                                                 <div class="form-group">
                                                     <label for="subject">Subject:</label>
                                                     <select id="subject" name="subject" class="form-control"
@@ -88,7 +90,6 @@
                                                         required value="{{ $bpproject->bpnotes }}">
                                                 </div>
                                             </div>
-
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="subtitles">Subtitles:</label>
@@ -110,12 +111,10 @@
                                                                 @endforeach
                                                             @endforeach
                                                         @endif
-
                                                     </div>
                                                     <button type="button" class="btn btn-primary mt-2"
-                                                        id="edit-subtitle_{{ $bpproject->id }}" data-bpprojectid="{{ $bpproject->id }}">Add
-                                                        New
-                                                        Subtitle</button>
+                                                        id="edit-subtitle_{{ $bpproject->id }}"
+                                                        data-bpprojectid="{{ $bpproject->id }}">Add New Subtitle</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,11 +133,11 @@
                                 const newSubtitle = document.createElement('div');
                                 newSubtitle.classList.add('input-group', 'mb-2');
                                 newSubtitle.innerHTML = `
-                                    <input type="text" name="subtitles[]" class="form-control" required>
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-danger remove-subtitle">Remove</button>
-                                    </div>
-                                `;
+                                <input type="text" name="subtitles[]" class="form-control" required>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-danger remove-subtitle">Remove</button>
+                                </div>
+                            `;
                                 container.appendChild(newSubtitle);
                             }
 
@@ -192,9 +191,9 @@
                                         </select>
                                     </div>
 
-                                    <div class="form-group">
+                                    <div class="form-group d-none">
                                         <label for="bpnotes">Notes:</label>
-                                        <input type="text" id="bpnotes" name="bpnotes" class="form-control"
+                                        <input type="text" id="bpnotes" name="bpnotes" class="form-control" value="-"
                                             required>
                                     </div>
                                 </div>
@@ -349,6 +348,24 @@
     </div>
 
     <script>
+        document.getElementById('searchBar').addEventListener('input', function() {
+            let filter = this.value.toLowerCase();
+            let cards = document.querySelectorAll('.project-card');
+
+            cards.forEach(function(card) {
+                let subject = card.getAttribute('data-subject').toLowerCase();
+                let title = card.getAttribute('data-title').toLowerCase();
+                let date = card.getAttribute('data-date').toLowerCase();
+
+                if (subject.includes(filter) || title.includes(filter) || date.includes(filter)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
             function addSubtitle(containerId) {
                 const container = document.getElementById(containerId);
@@ -414,9 +431,9 @@
         }
 
         document.querySelectorAll('.remove-subtitle').forEach(button => {
-        button.addEventListener('click', function() {
-            button.closest('.input-group').remove();
-        });
+            button.addEventListener('click', function() {
+                button.closest('.input-group').remove();
+            });
         });
     </script>
 @endsection
