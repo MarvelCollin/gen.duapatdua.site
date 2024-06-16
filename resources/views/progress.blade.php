@@ -27,13 +27,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <div class="mb-5">
-            <a class="btn btn-secondary" href="{{ route('casesolve.index') }}">
+        <div class="mb-5 row">
+            <a class="btn btn-secondary col-md-1 mr-3" href="{{ route('casesolve.index') }}">
                 Back
             </a>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#leaderboardModal">
+            <button type="button" class="btn btn-primary col-md-3 mr-3" data-toggle="modal" data-target="#leaderboardModal">
                 View Progress Angkatan
             </button>
+                <input type="text" id="searchInput" class="form-control col-md-5" placeholder="Search by trainee number or name">
         </div>
         @php
             $sortedDetails = $caseSolveDetails->sortBy(function ($detail) {
@@ -43,7 +44,7 @@
         @endphp
 
 
-        <div class="row">
+        <div class="row" id="traineeContainer">
             @foreach ($sortedDetails as $detail)
                 @php
                     $totalPercentage = $detail->caseSubtitles->sum('percentage');
@@ -51,15 +52,15 @@
                     $totalPercentageDone =
                         $totalSubtitleCount > 0 ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2) : 0;
                 @endphp
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4 trainee-card"
+                    data-trainee="{{ $detail->trainee->trainee_number }} {{ $detail->trainee->name }}">
                     <div class="card animate__animated animate__fadeIn">
                         <div class="card-body" style="cursor: pointer;" onclick="openModal('{{ $detail->id }}')">
                             <h5 class="card-title">{{ $detail->trainee->trainee_number }} - {{ $detail->trainee->name }}
                             </h5>
                             <p>Total Progress: {{ $totalPercentageDone }}%</p>
                             <button type="button" class="btn btn-primary"
-                                onclick="openModal('{{ $detail->id }}')">Update
-                                Progress</button>
+                                onclick="openModal('{{ $detail->id }}')">Update Progress</button>
                         </div>
                     </div>
                 </div>
@@ -212,11 +213,25 @@
                     </div>
                 </div>
             </div>
-        </div>
-    @endsection
 
     <script>
         function openModal(id) {
             $('#subtitleModal' + id).modal('show');
         }
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            let filter = this.value.toLowerCase();
+            let cards = document.querySelectorAll('.trainee-card');
+
+            cards.forEach(function(card) {
+                let trainee = card.getAttribute('data-trainee').toLowerCase();
+                if (trainee.includes(filter)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
     </script>
+        </div>
+    @endsection

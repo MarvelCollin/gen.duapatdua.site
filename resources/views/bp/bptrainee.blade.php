@@ -17,15 +17,25 @@
             <p class="lead mb-3">Subject: <strong>{{ $bpproject->subject }}</strong></p>
             <p class="text-muted">{{ $bpproject->bpnotes }}</p>
         </div>
-        <div class="mb-5">
-            <a class="btn btn-secondary" href="{{ route('bpprojects.index') }}">
-                Back
-            </a>
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#overallProgressModal">
-                View Leaderboard
-            </button>
-            <a href="{{ route('bpproject.details', $bpproject->id) }}" class="btn btn-info">View Project Details</a>
+        <div class="mb-5 row">
+            <div class="col-md-auto mb-3">
+                <a class="btn btn-secondary" href="{{ route('bpprojects.index') }}">
+                    Back
+                </a>
+            </div>
+            <div class="col-md-auto mb-3">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#overallProgressModal">
+                    View Leaderboard
+                </button>
+            </div>
+            <div class="col-md-auto mb-3">
+                <a href="{{ route('bpproject.details', $bpproject->id) }}" class="btn btn-info">View Project Details</a>
+            </div>
+            <div class="col-md mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by trainee number or name">
+            </div>
         </div>
+
         @php
             $sortedDetails = $bpprojectDetails->sortBy(function ($detail) {
                 preg_match('/T0(\d+)/', $detail->trainee->trainee_number, $matches);
@@ -41,14 +51,15 @@
                     $totalPercentageDone =
                         $totalSubtitleCount > 0 ? round(($totalPercentage / ($totalSubtitleCount * 100)) * 100, 2) : 0;
                 @endphp
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4 trainee-card"
+                    data-trainee="{{ $detail->trainee->trainee_number }} {{ $detail->trainee->name }}">
                     <div class="card animate__animated animate__fadeIn">
                         <div class="card-body" style="cursor: pointer;" onclick="openModal('{{ $detail->id }}')">
                             <h5 class="card-title">{{ $detail->trainee->trainee_number }} - {{ $detail->trainee->name }}
                             </h5>
                             <p>Total Progress: {{ $totalPercentageDone }}%</p>
-                            <button type="button" class="btn btn-primary" onclick="openModal('{{ $detail->id }}')">Update
-                                Progress</button>
+                            <button type="button" class="btn btn-primary"
+                                onclick="openModal('{{ $detail->id }}')">Update Progress</button>
                         </div>
                     </div>
                 </div>
@@ -194,10 +205,23 @@
                 </div>
             </div>
         </div>
-    @endsection
+        <script>
+            function openModal(id) {
+                $('#subtitleModal' + id).modal('show');
+            }
 
-    <script>
-        function openModal(id) {
-            $('#subtitleModal' + id).modal('show');
-        }
-    </script>
+            document.getElementById('searchInput').addEventListener('input', function() {
+                let filter = this.value.toLowerCase();
+                let cards = document.querySelectorAll('.trainee-card');
+
+                cards.forEach(function(card) {
+                    let trainee = card.getAttribute('data-trainee').toLowerCase();
+                    if (trainee.includes(filter)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        </script>
+    @endsection
