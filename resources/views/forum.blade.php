@@ -35,7 +35,7 @@
                     <div class="d-flex justify-content-end align-items-center">
                         <button class="btn btn-primary mr-3" id="newforumBtn" data-toggle="modal"
                             data-target="#newforumModal">New Forum</button>
-                        <a href="#" class="btn btn-primary mr-5" data-toggle="modal"
+                        <a href="{{ route('shuffleForums') }}" class="btn btn-primary mr-5" data-toggle="modal"
                             data-target="#shuffleForumsModal">Shuffle</a>
                         <div class="search-container">
                             <input type="text" id="searchInput" class="form-control"

@@ -11,7 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RundownController;
 use App\Http\Controllers\TrainerController;
-
+use Illuminate\Support\Facades\Artisan;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,6 +25,10 @@ use App\Http\Controllers\TrainerController;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/getStorageLink', function () {
+    Artisan::call('storage:link');
+});
 
 Route::middleware(['check.password'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');

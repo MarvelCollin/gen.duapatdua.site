@@ -57,10 +57,7 @@
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">
                                             <h2 class="font-weight-bold">{{ $caseSolve->title }}</h2>
-                                            <h4 class="mb-1"><strong>{{ $caseSolve->subject }}</strong></h4>
-                                            <h4 class="mb-3"><strong>Session:</strong> {{ $caseSolve->session }}</h4>
-                                            <p><strong>Dibuat pada:</strong>
-                                                {{ $caseSolve->created_at->format('Y-m-d H:i:s') }}</p>
+                                            <h4 class="mb-1"><strong>{{ $caseSolve->subject }} | {{ $caseSolve->session }}</strong></h4>
                                         </li>
                                     </ul>
                                 </div>
@@ -74,15 +71,15 @@
 
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var typed = new Typed('#welcome', {
-                strings: ["Welcome, Angkatan 24-2 Tercinta !", "Welcome, Angkatan 24-2 Tergacor !", "Welcome, Angkatan 24-2 Tersolid !"],
-                typeSpeed: 90,
-                backSpeed: 60,
-                showCursor: false,
-                smartBackspace: true,
-                loop: true
-            });
-        });
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     var typed = new Typed('#welcome', {
+        //         strings: ["Welcome, Angkatan 24-2 Tercinta !", "Welcome, Angkatan 24-2 Tergacor !", "Welcome, Angkatan 24-2 Tersolid !"],
+        //         typeSpeed: 90,
+        //         backSpeed: 60,
+        //         showCursor: false,
+        //         smartBackspace: true,
+        //         loop: true
+        //     });
+        // });
     </script>
 @endsection

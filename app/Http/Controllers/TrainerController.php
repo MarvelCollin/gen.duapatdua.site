@@ -26,8 +26,12 @@ class TrainerController extends Controller
         } else {
             $imagePath = 'null.jpg';
         }
+        $subjects = '';
 
-        $subjects = implode(', ', $request->input('subject'));
+        if($request->input('subject') != null){
+            $subjects = implode(', ', $request->input('subject'));
+
+        }
 
         $generation = $request->generation;
         $position = $request->position;
@@ -67,7 +71,12 @@ class TrainerController extends Controller
     {
         // dd($request->generation);
         $trainer = Trainer::findOrFail($id);
-        $subjects = implode(', ', $request->input('subject'));
+        $subjects = '';
+        if($request->input('subject') != null){
+            $subjects = implode(', ', $request->input('subject'));
+        }
+
+
         if ($request->hasFile('profile')) {
             $imagePath = $request->file('profile')->store('uploads/trainer', 'public');
 

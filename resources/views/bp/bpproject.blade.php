@@ -335,7 +335,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="trainees">Trainees</label>
-                                <textarea class="form-control" id="trainees" name="trainees" required></textarea>
+                                <textarea class="form-control" id="trainees" name="trainees" required placeholder="Example: T001 T002 T003"></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
