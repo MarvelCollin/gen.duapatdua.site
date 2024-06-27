@@ -70,16 +70,4 @@
     </div>
 
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     var typed = new Typed('#welcome', {
-        //         strings: ["Welcome, Angkatan 24-2 Tercinta !", "Welcome, Angkatan 24-2 Tergacor !", "Welcome, Angkatan 24-2 Tersolid !"],
-        //         typeSpeed: 90,
-        //         backSpeed: 60,
-        //         showCursor: false,
-        //         smartBackspace: true,
-        //         loop: true
-        //     });
-        // });
-    </script>
 @endsection

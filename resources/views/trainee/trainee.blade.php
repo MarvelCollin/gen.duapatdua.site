@@ -12,6 +12,10 @@
             background-color: #f0f0f0;
         }
 
+        img {
+            object-fit: cover;
+        }
+
         .inactive-trainee .card-body {
             background-color: #f0f0f0;
             color: #999;
