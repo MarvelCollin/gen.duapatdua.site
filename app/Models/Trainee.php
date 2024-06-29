@@ -24,4 +24,8 @@ class Trainee extends Model
     public function permissions(){
         return $this->hasMany(Permission::class);
     }
+
+    public function presentations(){
+        return $this->hasMany(Presentation::class);
+    }
 }

@@ -29,6 +29,9 @@
                 <li class="nav-item {{ Route::currentRouteName() == 'trainer.index' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('trainer.index') }}">Trainer List</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('home') }}">Daily Task</a>
+                </li>
                 <li class="nav-item {{ Route::currentRouteName() == 'showPermission' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('showPermission') }}">Permission</a>
                 </li>
@@ -43,6 +46,9 @@
                 </li>
                 <li class="nav-item {{ Route::currentRouteName() == 'showAcq' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('showAcq') }}">Acquaintance</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('home') }}">Presentation</a>
                 </li>
             </ul>
         <ul class="navbar-nav navbar-nav-no-margin">
