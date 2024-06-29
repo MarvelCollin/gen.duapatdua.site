@@ -22,46 +22,29 @@ class ForumController extends Controller
         if (!Hash::check($request->password, bcrypt('242gacor'))) {
             return redirect()->back()->with('error', 'Incorrect password.');
         }
+    
         $trainees = Trainee::all();
         $traineeCount = $trainees->count();
-
+    
         $forums = Forum::whereIn('forum_status', ['unshuffle', 'no'])->get();
         $forums = $forums->shuffle();
-
-        $forumsPerTrainee = $forums->count() / $traineeCount;
-        $forumsAssignedCount = [];
-
-        foreach ($forums as $index => $forum) {
-            $traineeIndex = $index % $traineeCount;
-            $trainee = $trainees[$traineeIndex];
-
+    
+        $forumsAssignedCount = array_fill(0, $traineeCount, 0);
+    
+        foreach ($forums as $forum) {
+            $minTraineeIndex = array_search(min($forumsAssignedCount), $forumsAssignedCount);
+    
+            $trainee = $trainees[$minTraineeIndex];
             $forum->trainee_id = $trainee->id;
             $forum->forum_status = 'no';
             $forum->save();
-
-            if (!isset($forumsAssignedCount[$traineeIndex])) {
-                $forumsAssignedCount[$traineeIndex] = 1;
-            } else {
-                $forumsAssignedCount[$traineeIndex]++;
-            }
-
-            if ($forumsAssignedCount[$traineeIndex] > $forumsPerTrainee) {
-                $minAssignedCount = min($forumsAssignedCount);
-                $minTraineeIndex = array_search($minAssignedCount, $forumsAssignedCount);
-
-                if ($traineeIndex != $minTraineeIndex) {
-                    $forum->trainee_id = $trainees[$minTraineeIndex]->id;
-                    $forum->save();
-
-                    $forumsAssignedCount[$minTraineeIndex]++;
-                    $forumsAssignedCount[$traineeIndex]--;
-                }
-            }
+    
+            $forumsAssignedCount[$minTraineeIndex]++;
         }
-
+    
         return redirect()->route('showForum');
     }
-
+    
     public function store(Request $request)
     {
         $request->validate([
