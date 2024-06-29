@@ -23,11 +23,14 @@
                 <li class="nav-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('home') }}">Home</a>
                 </li>
-                <li class="nav-item {{ Route::currentRouteName() == 'showPermission' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('showPermission') }}">Permission</a>
-                </li>
                 <li class="nav-item {{ Route::currentRouteName() == 'trainee.index' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('trainee.index') }}">Trainee List</a>
+                </li>
+                <li class="nav-item {{ Route::currentRouteName() == 'trainer.index' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('trainer.index') }}">Trainer List</a>
+                </li>
+                <li class="nav-item {{ Route::currentRouteName() == 'showPermission' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('showPermission') }}">Permission</a>
                 </li>
                 <li class="nav-item {{ Route::currentRouteName() == 'casesolve.index' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('casesolve.index') }}">Case Solving</a>

@@ -22,4 +22,10 @@ class PermissionController extends Controller
         // dd($request->trainee_number);
         return redirect()->back();
     }
+
+    public function remove($id){
+        $permission = Permission::findOrFail($id);
+        $permission->delete();
+        return redirect()->back();
+    }
 }

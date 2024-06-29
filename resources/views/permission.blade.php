@@ -4,26 +4,40 @@
 
 @section('content')
     <style>
-        .grayscale {
-            filter: grayscale(100%);
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.25rem;
+            padding: 0.75rem;
         }
 
-        .inactive-trainee .card {
-            background-color: #f0f0f0;
+        .card-body {
+            padding: 1rem;
         }
 
-        img {
-            object-fit: cover;
+        .card-body .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
         }
 
-        .inactive-trainee .card-body {
-            background-color: #f0f0f0;
-            color: #999;
+        .card-body .card-text {
+            color: #666;
+        }
+
+        .btn-delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .created-at {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
     </style>
 
     <div class="container mt-4">
-        <div class="header row mb-3">
+        <div class="row mb-3">
             <div class="col-md-9">
                 <h3>Permission List</h3>
             </div>
@@ -34,30 +48,57 @@
             </div>
         </div>
 
-        <div class="card-container row">
-            @if ($permissions)
-                @foreach ($permissions as $permission)
-                    <div class="col-md-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body d-flex align-items-center justify-content-between">
-                                <div>
-                                    <h5 class="card-title">{{ $permission->trainee_number }}</h5>
-                                    <p class="card-text">{{ $permission->reason }}</p>
+        <div class="row">
+            <div class="col-md-12">
+                @php
+                    $lastDate = '';
+                @endphp
+                @forelse ($permissions->reverse() as $permission)
+                    @php
+                        $currentDate = $permission->created_at->format('d F Y');
+                    @endphp
+
+                    @if ($currentDate != $lastDate)
+                        @if ($lastDate != '')
                                 </div>
-                                <form action="{{ route('deletePermission', ['id' => $permission->id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                            </div>
+                        @endif
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <div class="created-at">{{ $currentDate }}</div>
+                        </div>
+                        <div class="card-body">
+                    @endif
+
+                    <div class="card mb-3 position-relative">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $permission->trainee_number }}: {{ $permission->reason }}</h5>
+                            <form action="{{ route('deletePermission', ['id' => $permission->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm btn-delete">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    @php
+                        $lastDate = $currentDate;
+                    @endphp
+
+                @empty
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text">No permissions found.</p>
+                        </div>
+                    </div>
+                @endforelse
+
+                @if (!empty($lastDate))
                             </div>
                         </div>
                     </div>
-                @endforeach
-            @else
-                <div class="col-md-12">
-                    <p>No permissions found.</p>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
 
         <div class="modal fade" id="newPermissionModal" tabindex="-1" role="dialog" aria-labelledby="newPermissionLabel"
