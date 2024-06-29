@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RundownController;
 use App\Http\Controllers\TrainerController;
@@ -79,4 +80,7 @@ Route::middleware(['check.password'])->group(function () {
     Route::get('/trainees/acq', [TraineeController::class, 'showAcq'])->name('showAcq');
     Route::post('/trainees/{id}/edit-totalAcq', [TraineeController::class, 'editTotalAcq'])->name('editTotalAcq');
 
+    Route::get('/permission', [PermissionController::class, 'show'])->name('showPermission');
+    Route::post('/permission/create', [PermissionController::class, 'create'])->name('createPermission');
+    Route::delete('/permission/delete/{id}', [PermissionController::class, 'remove'])->name('deletePermission');
 });

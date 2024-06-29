@@ -20,4 +20,8 @@ class Trainee extends Model
     {
         return $this->hasMany(BpprojectDetail::class);
     }
+
+    public function permissions(){
+        return $this->hasMany(Permission::class);
+    }
 }
