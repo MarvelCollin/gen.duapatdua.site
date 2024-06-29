@@ -12,6 +12,6 @@ class Presentation extends Model
     protected $guarded = [];
 
     public function trainee(){
-        return $this->belongsTo(Trainee::class);
+        return $this->belongsTo(Trainee::class, 'trainee_id');
     }
 }

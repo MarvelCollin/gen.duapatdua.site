@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('presentations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('trainee')->constrained('trainees')->onDelete('cascade');
+            $table->foreignId('trainee_id')->constrained('trainees')->onDelete('cascade'); 
             $table->string('status');
             $table->string('subject');
             $table->string('material');

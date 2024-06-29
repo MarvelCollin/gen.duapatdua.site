@@ -9,6 +9,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RundownController;
 use App\Http\Controllers\TrainerController;
@@ -83,4 +84,8 @@ Route::middleware(['check.password'])->group(function () {
     Route::get('/permission', [PermissionController::class, 'show'])->name('showPermission');
     Route::post('/permission/create', [PermissionController::class, 'create'])->name('createPermission');
     Route::delete('/permission/delete/{id}', [PermissionController::class, 'remove'])->name('deletePermission');
+    
+    Route::get('/presentation', [PresentationController::class, 'show'])->name('showPresentation');
+    Route::post('/presentation/create', [PresentationController::class, 'create'])->name('createPresentation');
+    Route::delete('/presentation/delete/{id}', [PresentationController::class, 'delete'])->name('deletePresentation');
 });
