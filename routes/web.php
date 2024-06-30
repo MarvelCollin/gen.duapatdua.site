@@ -91,4 +91,6 @@ Route::middleware(['check.password'])->group(function () {
     Route::delete('/presentation/delete/{id}', [PresentationController::class, 'delete'])->name('deletePresentation');
 
     Route::get('/daily-tasks', [DailyTaskController::class, 'show'])->name('showTasks');
+    Route::post('/daily-tasks/create', [DailyTaskController::class, 'create'])->name('createTasks');    
+    Route::post('/dailytask/update/{id}', [DailyTaskController::class, 'update'])->name('updateTraineeTasks');
 });

@@ -28,4 +28,8 @@ class Trainee extends Model
     public function presentations(){
         return $this->hasMany(Presentation::class);
     }
+
+    public function dailyTasks(){
+        return $this->hasMany(DailyTask::class);
+    }
 }
