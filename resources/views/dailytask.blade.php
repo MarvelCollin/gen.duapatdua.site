@@ -7,6 +7,7 @@
     .card {
         transition: box-shadow 0.3s ease-in-out;
         margin-bottom: 20px;
+        border-radius: 10px;
     }
 
     .card:hover {
@@ -38,6 +39,28 @@
     .alert {
         margin-bottom: 20px;
     }
+
+    .task-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .task-list li {
+        background: #f8f9fa;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .modal-dialog-centered {
+        display: flex;
+        align-items: center;
+        min-height: calc(100% - 1rem);
+    }
+
+    .modal-dialog-centered .modal-content {
+        width: 100%;
+    }
 </style>
 
 @section('content')
@@ -58,7 +81,11 @@
             </div>
         @endif
 
-        <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#manageTaskModal">Manage Tasks</button>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#manageTaskModal">Manage Tasks</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewAllProgressModal">View All Progress</button>
+            <button type="button" class="btn btn-danger" onclick="resetAllTasks()">Reset All Tasks</button>
+        </div>
 
         <div class="row" id="traineeContainer">
             @foreach ($dailyTasks as $traineeId => $tasks)
@@ -70,20 +97,137 @@
                 @endphp
                 <div class="col-md-4 trainee-card" data-trainee="{{ $trainee->trainee_number }} {{ $trainee->name }}">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body text-center">
                             <h5 class="card-title">{{ $trainee->trainee_number }} - {{ $trainee->name }}</h5>
-                            <p>Total Progress: {{ $totalPercentageDone }}%</p>
-                            <ul>
+                            <p>Total Progress: <strong>{{ $totalPercentageDone }}%</strong></p>
+                            <ul class="task-list">
                                 @foreach ($tasks as $task)
-                                    <li>{{ $task->task }} - {{ ucfirst($task->status) }}</li>
+                                    <li>{{ $task->task }} - <strong>{{ ucfirst($task->status) }}</strong></li>
                                 @endforeach
                             </ul>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateTaskModal{{ $trainee->id }}">
+                                Update Progress
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Task Modal -->
+                <div class="modal fade" id="updateTaskModal{{ $trainee->id }}" tabindex="-1" aria-labelledby="updateTaskModalLabel{{ $trainee->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateTaskModalLabel{{ $trainee->id }}">Update Tasks for {{ $trainee->name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('updateTraineeTasks', $tasks->first()->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div id="tasksContainer{{ $trainee->id }}">
+                                        @foreach ($tasks as $task)
+                                            <div class="form-group task-group">
+                                                <label for="task">Task</label>
+                                                <div class="input-group mb-2">
+                                                    <input type="hidden" name="tasks[{{ $loop->index }}][id]" value="{{ $task->id }}">
+                                                    <input type="checkbox" name="tasks[{{ $loop->index }}][status]" {{ $task->status == 'completed' ? 'checked' : '' }}> {{ $task->task }}
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
 
+        <!-- View All Progress Modal -->
+        <div class="modal fade" id="viewAllProgressModal" tabindex="-1" aria-labelledby="viewAllProgressModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewAllProgressModalLabel">All Trainees Progress</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Ranks</th>
+                                        <th>Trainee</th>
+                                        <th class="pr-2">Name</th>
+                                        @php
+                                            $allTasks = $dailyTasks->flatten()->unique('task')->pluck('task');
+                                        @endphp
+                                        @foreach ($allTasks as $task)
+                                            <th>{{ $task }}</th>
+                                        @endforeach
+                                        <th class="pr-2">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                    @php
+                                        $sortedTrainees = $dailyTasks->sortByDesc(function ($tasks) {
+                                            return $tasks->where('status', 'completed')->count() / $tasks->count();
+                                        });
+
+                                        $index = 1;
+                                    @endphp
+                                    @foreach ($sortedTrainees as $traineeId => $tasks)
+                                        @php
+                                            $trainee = $tasks->first()->trainee;
+                                            $totalTasks = $tasks->count();
+                                            $completedTasks = $tasks->where('status', 'completed')->count();
+                                            $totalPercentageDone = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
+                                        @endphp
+                                        <tr>
+                                            <td>#{{ $index++ }}</td>
+                                            <td>{{ $trainee->trainee_number }}</td>
+                                            <td>{{ $trainee->name }}</td>
+                                            @foreach ($allTasks as $task)
+                                                @php
+                                                    $taskStatus = $tasks->where('task', $task)->first();
+                                                    $status = $taskStatus ? $taskStatus->status : 'not started';
+                                                    $bgColor = '';
+                                                    $fontColor = '';
+                                                    switch ($status) {
+                                                        case 'completed':
+                                                            $bgColor = '#00ff00';
+                                                            $fontColor = '#000000';
+                                                            break;
+                                                        case 'pending':
+                                                            $bgColor = '#ffff00';
+                                                            $fontColor = '#000000';
+                                                            break;
+                                                        case 'not started':
+                                                        default:
+                                                            $bgColor = '#ff0000';
+                                                            $fontColor = '#ffffff';
+                                                            break;
+                                                    }
+                                                @endphp
+                                                <td style="background-color: {{ $bgColor }}; color: {{ $fontColor }}; text-align: center; font-weight: bold;">
+                                                    {{ ucfirst($status) }}
+                                                </td>
+                                            @endforeach
+                                            <td>{{ $totalPercentageDone }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Task Modal -->
         <div class="modal fade" id="manageTaskModal" tabindex="-1" aria-labelledby="manageTaskModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -95,9 +239,12 @@
                         <form action="{{ route('createTasks') }}" method="POST" onsubmit="return validateTasks()">
                             @csrf
                             <div id="tasksContainer">
-                                @foreach ($dailyTasks->flatten() as $task)
+                                @php
+                                    $uniqueTasks = $dailyTasks->flatten()->unique('task');
+                                @endphp
+                                <label for="task">Task</label>
+                                @foreach ($uniqueTasks as $task)
                                     <div class="form-group task-group">
-                                        <label for="task">Task</label>
                                         <div class="input-group mb-2">
                                             <input type="hidden" name="tasks[{{ $loop->index }}][id]" value="{{ $task->id }}">
                                             <input type="text" class="form-control" name="tasks[{{ $loop->index }}][task]" value="{{ $task->task }}" required>
@@ -125,7 +272,6 @@
                 const newTaskGroup = document.createElement('div');
                 newTaskGroup.classList.add('form-group', 'task-group');
                 newTaskGroup.innerHTML = `
-                    <label for="task">Task</label>
                     <div class="input-group mb-2">
                         <input type="text" class="form-control" name="tasks[${index}][task]" required>
                         <div class="input-group-append">
@@ -156,6 +302,29 @@
                     }
                 }
                 return true;
+            }
+
+            function resetAllTasks() {
+                if (confirm("Are you sure you want to reset all tasks to pending?")) {
+                    fetch('{{ route('resetTasks') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert("An error occurred while resetting tasks.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while resetting tasks.");
+                    });
+                }
             }
         </script>
     </div>

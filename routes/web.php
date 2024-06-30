@@ -92,5 +92,6 @@ Route::middleware(['check.password'])->group(function () {
 
     Route::get('/daily-tasks', [DailyTaskController::class, 'show'])->name('showTasks');
     Route::post('/daily-tasks/create', [DailyTaskController::class, 'create'])->name('createTasks');    
-    Route::post('/dailytask/update/{id}', [DailyTaskController::class, 'update'])->name('updateTraineeTasks');
+    Route::put('/dailytask/update/{id}', [DailyTaskController::class, 'update'])->name('updateTraineeTasks');
+    Route::post('/resetTasks', [DailyTaskController::class, 'resetTasks'])->name('resetTasks');
 });

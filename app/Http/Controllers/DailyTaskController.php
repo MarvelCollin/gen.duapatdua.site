@@ -18,68 +18,69 @@ class DailyTaskController extends Controller
 
     public function create(Request $request)
     {
-     // Validate the request
-     $request->validate([
-        'tasks' => 'array',
-        'tasks.*.task' => 'required|string|max:255',
-    ]);
+        $trainees = Trainee::where('status', 'active')->get();
 
-    // Retrieve all active trainees
-    $trainees = Trainee::where('status', 'active')->get();
-
-    // Remove selected tasks
-    if ($request->has('remove_tasks')) {
-        foreach ($request->remove_tasks as $taskId) {
-            DailyTask::where('id', $taskId)->delete();
+        if ($request->has('remove_tasks')) {
+            foreach ($request->remove_tasks as $taskId) {
+                // Find the task details
+                $taskToRemove = DailyTask::find($taskId);
+                if ($taskToRemove) {
+                    foreach ($trainees as $trainee) {
+                        DailyTask::where('trainee_id', $trainee->id)
+                            ->where('task', $taskToRemove->task)
+                            ->delete();
+                    }
+                }
+            }
         }
-    }
 
-    // Add or update tasks
-    foreach ($request->tasks as $taskData) {
-        foreach ($trainees as $trainee) {
-            if (isset($taskData['id'])) {
-                // Update existing task
-                $task = DailyTask::where('trainee_id', $trainee->id)
-                                 ->where('id', $taskData['id'])
-                                 ->first();
-                if ($task) {
-                    $task->update([
+        foreach ($request->tasks as $taskData) {
+            foreach ($trainees as $trainee) {
+                if (isset($taskData['id'])) {
+                    $task = DailyTask::where('trainee_id', $trainee->id)
+                        ->where('id', $taskData['id'])
+                        ->first();
+                    if ($task) {
+                        $task->update([
+                            'task' => $taskData['task'],
+                            'status' => isset($taskData['status']) ? 'completed' : 'pending',
+                        ]);
+                    }
+                } else {
+                    DailyTask::create([
+                        'trainee_id' => $trainee->id,
                         'task' => $taskData['task'],
                         'status' => isset($taskData['status']) ? 'completed' : 'pending',
                     ]);
                 }
-            } else {
-                // Create new task
-                DailyTask::create([
-                    'trainee_id' => $trainee->id,
-                    'task' => $taskData['task'],
-                    'status' => isset($taskData['status']) ? 'completed' : 'pending',
-                ]);
             }
         }
-    }
 
-    return redirect()->back()->with('success', 'Tasks updated successfully for all active trainees.');
+        return redirect()->back()->with('success', 'Tasks updated successfully for all active trainees.');
     }
-    
-    
-
     public function update(Request $request, $id)
     {
         $dailyTask = DailyTask::findOrFail($id);
+        $traineeId = $dailyTask->trainee_id;
 
         foreach ($request->tasks as $taskData) {
-            $task = DailyTask::where('trainee_id', $dailyTask->trainee_id)
-                ->where('task', $taskData['task'])
+            $task = DailyTask::where('trainee_id', $traineeId)
+                ->where('id', $taskData['id'])
                 ->first();
 
             if ($task) {
                 $task->update([
-                    'status' => $taskData['status'],
+                    'status' => isset($taskData['status']) ? 'completed' : 'pending',
                 ]);
             }
         }
 
-        return redirect()->route('dailytask.index')->with('success', 'Tasks updated successfully.');
+        return redirect()->back();
+    }
+
+    public function resetTasks(Request $request)
+    {
+        DailyTask::where('status', '!=', 'pending')->update(['status' => 'pending']);
+        return response()->json(['success' => true]);
     }
 }
