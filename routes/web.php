@@ -7,6 +7,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
+use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PresentationController;
@@ -88,4 +89,6 @@ Route::middleware(['check.password'])->group(function () {
     Route::get('/presentation', [PresentationController::class, 'show'])->name('showPresentation');
     Route::post('/presentation/create', [PresentationController::class, 'create'])->name('createPresentation');
     Route::delete('/presentation/delete/{id}', [PresentationController::class, 'delete'])->name('deletePresentation');
+
+    Route::get('/daily-tasks', [DailyTaskController::class, 'show'])->name('showTasks');
 });
