@@ -61,6 +61,19 @@
     .modal-dialog-centered .modal-content {
         width: 100%;
     }
+
+    .modal-dialog-password {
+        max-width: 400px;
+    }
+
+    .form-check-input {
+        transform: scale(1.5);
+        margin-right: 10px;
+    }
+
+    .search-bar {
+        margin-bottom: 20px;
+    }
 </style>
 
 @section('content')
@@ -84,8 +97,10 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#manageTaskModal">Manage Tasks</button>
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewAllProgressModal">View All Progress</button>
-            <button type="button" class="btn btn-danger" onclick="resetAllTasks()">Reset All Tasks</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Reset All Tasks</button>
         </div>
+
+        <input type="text" id="searchInput" class="form-control search-bar" placeholder="Search by trainee number or name">
 
         <div class="row" id="traineeContainer">
             @foreach ($dailyTasks as $traineeId => $tasks)
@@ -100,11 +115,11 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ $trainee->trainee_number }} - {{ $trainee->name }}</h5>
                             <p>Total Progress: <strong>{{ $totalPercentageDone }}%</strong></p>
-                            <ul class="task-list">
+                            {{-- <ul class="task-list">
                                 @foreach ($tasks as $task)
                                     <li>{{ $task->task }} - <strong>{{ ucfirst($task->status) }}</strong></li>
                                 @endforeach
-                            </ul>
+                            </ul> --}}
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateTaskModal{{ $trainee->id }}">
                                 Update Progress
                             </button>
@@ -127,10 +142,12 @@
                                     <div id="tasksContainer{{ $trainee->id }}">
                                         @foreach ($tasks as $task)
                                             <div class="form-group task-group">
-                                                <label for="task">Task</label>
                                                 <div class="input-group mb-2">
                                                     <input type="hidden" name="tasks[{{ $loop->index }}][id]" value="{{ $task->id }}">
-                                                    <input type="checkbox" name="tasks[{{ $loop->index }}][status]" {{ $task->status == 'completed' ? 'checked' : '' }}> {{ $task->task }}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="tasks[{{ $loop->index }}][status]" {{ $task->status == 'completed' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="tasks[{{ $loop->index }}][status]">{{ $task->task }}</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -249,7 +266,7 @@
                                             <input type="hidden" name="tasks[{{ $loop->index }}][id]" value="{{ $task->id }}">
                                             <input type="text" class="form-control" name="tasks[{{ $loop->index }}][task]" value="{{ $task->task }}" required>
                                             <div class="input-group-append">
-                                                <span class="btn-remove" onclick="removeTask(this, '{{ $task->id }}')">Remove</span>
+                                                <span class="btn-remove btn btn-danger" onclick="removeTask(this, '{{ $task->id }}')">Remove</span>
                                             </div>
                                         </div>
                                     </div>
@@ -259,6 +276,28 @@
                                 <button type="button" class="btn btn-secondary" onclick="addTask()">Add More Task</button>
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reset Password Modal -->   
+        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-password">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="resetPasswordModalLabel">Confirm Reset</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="resetPasswordForm">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="resetPassword" class="form-label">Enter Password to Confirm</label>
+                                <input type="password" class="form-control" id="resetPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100">Confirm Reset</button>
                         </form>
                     </div>
                 </div>
@@ -305,27 +344,52 @@
             }
 
             function resetAllTasks() {
-                if (confirm("Are you sure you want to reset all tasks to pending?")) {
-                    fetch('{{ route('resetTasks') }}', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert("An error occurred while resetting tasks.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert("An error occurred while resetting tasks.");
-                    });
+                const password = document.getElementById('resetPassword').value;
+                if (password.trim() === "") {
+                    alert("Password is required");
+                    return;
                 }
+
+                fetch('{{ route('resetTasks') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert("Invalid password or an error occurred while resetting tasks.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while resetting tasks.");
+                });
             }
+
+            document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                resetAllTasks();
+            });
+
+            document.getElementById('searchInput').addEventListener('input', function() {
+                let filter = this.value.toLowerCase();
+                let cards = document.querySelectorAll('.trainee-card');
+
+                cards.forEach(function(card) {
+                    let trainee = card.getAttribute('data-trainee').toLowerCase();
+                    if (trainee.includes(filter)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
         </script>
     </div>
 @endsection

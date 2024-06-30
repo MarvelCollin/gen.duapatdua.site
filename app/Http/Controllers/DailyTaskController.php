@@ -22,7 +22,6 @@ class DailyTaskController extends Controller
 
         if ($request->has('remove_tasks')) {
             foreach ($request->remove_tasks as $taskId) {
-                // Find the task details
                 $taskToRemove = DailyTask::find($taskId);
                 if ($taskToRemove) {
                     foreach ($trainees as $trainee) {
@@ -80,7 +79,13 @@ class DailyTaskController extends Controller
 
     public function resetTasks(Request $request)
     {
+        $request->validate(['password' => 'required']);
+        if ($request->password !== 'cium dulu') {
+            return response()->json(['success' => false, 'message' => 'Invalid password']);
+        }
+    
         DailyTask::where('status', '!=', 'pending')->update(['status' => 'pending']);
         return response()->json(['success' => true]);
     }
+    
 }
