@@ -43,7 +43,7 @@
             </div>
             <div class="col-md-3 text-right">
                 <button class="btn btn-primary" id="newPermissionButton" data-toggle="modal"
-                        data-target="#newPermissionModal">New Permission
+                    data-target="#newPermissionModal">New Permission
                 </button>
             </div>
         </div>
@@ -60,76 +60,77 @@
 
                     @if ($currentDate != $lastDate)
                         @if ($lastDate != '')
-                                </div>
-                            </div>
-                        @endif
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <div class="created-at">{{ $currentDate }}</div>
-                        </div>
-                        <div class="card-body">
-                    @endif
-
-                    <div class="card mb-3 position-relative">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $permission->trainee_number }}: {{ $permission->reason }}</h5>
-                            <form action="{{ route('deletePermission', ['id' => $permission->id]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm btn-delete">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    @php
-                        $lastDate = $currentDate;
-                    @endphp
-
-                @empty
-                    <div class="card">
-                        <div class="card-body">
-                            <p class="card-text">No permissions found.</p>
-                        </div>
-                    </div>
-                @endforelse
-
-                @if (!empty($lastDate))
-                            </div>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
+        @endif
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="created-at">{{ $currentDate }}</div>
+            </div>
+            <div class="card-body">
+                @endif
 
-        <div class="modal fade" id="newPermissionModal" tabindex="-1" role="dialog" aria-labelledby="newPermissionLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="newPermissionLabel">New Permission</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ route('createPermission') }}" method="POST">
+                <div class="card mb-3 position-relative">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <h5 class="card-title text-wrap">{{ $permission->trainee_number }}: {{ $permission->reason }}</h5>
+                        <form action="{{ route('deletePermission', ['id' => $permission->id]) }}" method="POST">
                             @csrf
-                            <div class="form-group">
-                                <label for="traineeNumber">Trainee</label>
-                                <input type="text" class="form-control" id="traineeNumber" placeholder="Trainee Number"
-                                       name="trainee_number">
-                            </div>
-                            <div class="form-group">
-                                <label for="permissionReason">Reason</label>
-                                <input type="text" class="form-control" id="permissionReason" placeholder="Reason"
-                                       name="reason">
-                            </div>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </div>
                 </div>
+
+
+                @php
+                    $lastDate = $currentDate;
+                @endphp
+
+            @empty
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">No permissions found.</p>
+                    </div>
+                </div>
+                @endforelse
+
+                @if (!empty($lastDate))
             </div>
         </div>
+    </div>
+    @endif
+    </div>
+    </div>
+
+    <div class="modal fade" id="newPermissionModal" tabindex="-1" role="dialog" aria-labelledby="newPermissionLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newPermissionLabel">New Permission</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('createPermission') }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="traineeNumber">Trainee</label>
+                            <input type="text" class="form-control" id="traineeNumber" placeholder="Trainee Number"
+                                name="trainee_number">
+                        </div>
+                        <div class="form-group">
+                            <label for="permissionReason">Reason</label>
+                            <input type="text" class="form-control" id="permissionReason" placeholder="Reason"
+                                name="reason">
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 @endsection

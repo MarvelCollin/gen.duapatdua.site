@@ -78,7 +78,7 @@
 
 @section('content')
     <div class="container">
-        <h1 class="text-center mb-4">Daily Task Progress</h1>
+        <h1 class="text-center mb-4">Daily Tasks</h1>
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -115,11 +115,11 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ $trainee->trainee_number }} - {{ $trainee->name }}</h5>
                             <p>Total Progress: <strong>{{ $totalPercentageDone }}%</strong></p>
-                            {{-- <ul class="task-list">
-                                @foreach ($tasks as $task)
-                                    <li>{{ $task->task }} - <strong>{{ ucfirst($task->status) }}</strong></li>
-                                @endforeach
-                            </ul> --}}
+                            <ul class="task-list">
+                                <!--@foreach ($tasks as $task)-->
+                                <!--    <li>{{ $task->task }} - <strong>{{ ucfirst($task->status) }}</strong></li>-->
+                                <!--@endforeach-->
+                            </ul>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateTaskModal{{ $trainee->id }}">
                                 Update Progress
                             </button>
@@ -264,9 +264,9 @@
                                     <div class="form-group task-group">
                                         <div class="input-group mb-2">
                                             <input type="hidden" name="tasks[{{ $loop->index }}][id]" value="{{ $task->id }}">
-                                            <input type="text" class="form-control" name="tasks[{{ $loop->index }}][task]" value="{{ $task->task }}" required>
+                                            <input type="text" class="form-control" name="tasks[{{ $loop->index }}][task]" value="{{ $task->task }}" required readonly>
                                             <div class="input-group-append">
-                                                <span class="btn-remove btn btn-danger" onclick="removeTask(this, '{{ $task->id }}')">Remove</span>
+                                                <span class="btn btn-danger" onclick="removeTask(this, '{{ $task->id }}')">Remove</span>
                                             </div>
                                         </div>
                                     </div>
@@ -314,7 +314,7 @@
                     <div class="input-group mb-2">
                         <input type="text" class="form-control" name="tasks[${index}][task]" required>
                         <div class="input-group-append">
-                            <span class="btn-remove" onclick="removeTask(this)">Remove</span>
+                            <span class="btn btn-danger" onclick="removeTask(this)">Remove</span>
                         </div>
                     </div>
                 `;

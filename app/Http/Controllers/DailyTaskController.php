@@ -75,7 +75,7 @@ class DailyTaskController extends Controller
         }
 
         return redirect()->back();
-    }
+    }   
 
     public function resetTasks(Request $request)
     {
