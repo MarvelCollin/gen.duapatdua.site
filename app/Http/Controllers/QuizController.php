@@ -9,7 +9,8 @@ class QuizController extends Controller
 {
     public function showTraineeQuiz()
     {
-        $trainee = Trainee::all();
+        $trainee = Trainee::where('status', 'active')->get();
         return view('trainee.trainee_quiz', compact('trainee'));
     }
+    
 }

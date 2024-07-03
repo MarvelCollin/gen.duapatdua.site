@@ -8,6 +8,24 @@
     .card:hover {
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
+
+    .sticky-header {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .sticky-header thead {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        background-color: #ffffff;
+    }
+
+    .sticky-header th,
+    .sticky-header td {
+        padding: 10px;
+        border: 1px solid #dddddd;
+    }
 </style>
 
 @section('content')
@@ -31,10 +49,12 @@
             <a class="btn btn-secondary col-md-1 mr-3" href="{{ route('casesolve.index') }}">
                 Back
             </a>
-            <button type="button" class="btn btn-primary col-md-3 mr-3" data-toggle="modal" data-target="#leaderboardModal">
+            <button type="button" class="btn btn-primary col-md-3 mr-3" data-toggle="modal"
+                data-target="#leaderboardModal">
                 View Progress Angkatan
             </button>
-                <input type="text" id="searchInput" class="form-control col-md-5" placeholder="Search by trainee number or name">
+            <input type="text" id="searchInput" class="form-control col-md-5"
+                placeholder="Search by trainee number or name">
         </div>
         @php
             $sortedDetails = $caseSolveDetails->sortBy(function ($detail) {
@@ -140,8 +160,8 @@
                     </div>
                     <div class="modal-body text-center">
                         <div class="table-responsive">
-                            <table class="table">
-                                <thead class="text-center">
+                            <table class="table sticky-header">
+                                <thead class="position-sticky text-center">
                                     <tr>
                                         <th>Ranks</th>
                                         <th>Trainee</th>
@@ -153,7 +173,6 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-center">
-
                                     @php
                                         $sortedDetails = $sortedDetails->sortByDesc(function ($detail) {
                                             return $detail->caseSubtitles->sum('percentage');
@@ -213,25 +232,27 @@
                     </div>
                 </div>
             </div>
-
-    <script>
-        function openModal(id) {
-            $('#subtitleModal' + id).modal('show');
-        }
-
-        document.getElementById('searchInput').addEventListener('input', function() {
-            let filter = this.value.toLowerCase();
-            let cards = document.querySelectorAll('.trainee-card');
-
-            cards.forEach(function(card) {
-                let trainee = card.getAttribute('data-trainee').toLowerCase();
-                if (trainee.includes(filter)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    </script>
         </div>
-    @endsection
+
+
+        <script>
+            function openModal(id) {
+                $('#subtitleModal' + id).modal('show');
+            }
+
+            document.getElementById('searchInput').addEventListener('input', function() {
+                let filter = this.value.toLowerCase();
+                let cards = document.querySelectorAll('.trainee-card');
+
+                cards.forEach(function(card) {
+                    let trainee = card.getAttribute('data-trainee').toLowerCase();
+                    if (trainee.includes(filter)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        </script>
+    </div>
+@endsection
