@@ -9,22 +9,11 @@
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
-    .sticky-header {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
     .sticky-header thead {
         position: sticky;
         top: 0;
-        z-index: 999;
-        background-color: #ffffff;
-    }
-
-    .sticky-header th,
-    .sticky-header td {
-        padding: 10px;
-        border: 1px solid #dddddd;
+        z-index: 1;
+        background-color: white;
     }
 </style>
 

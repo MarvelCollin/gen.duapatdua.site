@@ -14,7 +14,8 @@
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
-    .modal-header, .modal-footer {
+    .modal-header,
+    .modal-footer {
         background-color: #f8f9fa;
     }
 
@@ -95,15 +96,25 @@
         @endif
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#manageTaskModal">Manage Tasks</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewAllProgressModal">View All Progress</button>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Reset All Tasks</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#manageTaskModal">Manage
+                Tasks</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                data-bs-target="#viewAllProgressModal">View All Progress</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Reset
+                All Tasks</button>
         </div>
 
-        <input type="text" id="searchInput" class="form-control search-bar" placeholder="Search by trainee number or name">
+        <input type="text" id="searchInput" class="form-control search-bar"
+            placeholder="Search by trainee number or name">
 
         <div class="row" id="traineeContainer">
-            @foreach ($dailyTasks as $traineeId => $tasks)
+            @php
+                $sortedDailyTasks = $dailyTasks->sortBy(function ($tasks, $traineeId) {
+                    return $tasks->first()->trainee->trainee_number;
+                });
+            @endphp
+
+            @foreach ($sortedDailyTasks as $traineeId => $tasks)
                 @php
                     $trainee = $tasks->first()->trainee;
                     $totalTasks = $tasks->count();
@@ -116,11 +127,12 @@
                             <h5 class="card-title">{{ $trainee->trainee_number }} - {{ $trainee->name }}</h5>
                             <p>Total Progress: <strong>{{ $totalPercentageDone }}%</strong></p>
                             <ul class="task-list">
-                                <!--@foreach ($tasks as $task)-->
-                                <!--    <li>{{ $task->task }} - <strong>{{ ucfirst($task->status) }}</strong></li>-->
-                                <!--@endforeach-->
+                                {{-- @foreach ($tasks as $task) --}}
+                                {{-- <li>{{ $task->task }} - <strong>{{ ucfirst($task->status) }}</strong></li> --}}
+                                {{-- @endforeach --}}
                             </ul>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateTaskModal{{ $trainee->id }}">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#updateTaskModal{{ $trainee->id }}">
                                 Update Progress
                             </button>
                         </div>
@@ -128,12 +140,15 @@
                 </div>
 
                 <!-- Update Task Modal -->
-                <div class="modal fade" id="updateTaskModal{{ $trainee->id }}" tabindex="-1" aria-labelledby="updateTaskModalLabel{{ $trainee->id }}" aria-hidden="true">
+                <div class="modal fade" id="updateTaskModal{{ $trainee->id }}" tabindex="-1"
+                    aria-labelledby="updateTaskModalLabel{{ $trainee->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="updateTaskModalLabel{{ $trainee->id }}">Update Tasks for {{ $trainee->name }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h5 class="modal-title" id="updateTaskModalLabel{{ $trainee->id }}">Update Tasks for
+                                    {{ $trainee->name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <form action="{{ route('updateTraineeTasks', $tasks->first()->id) }}" method="POST">
@@ -143,10 +158,14 @@
                                         @foreach ($tasks as $task)
                                             <div class="form-group task-group">
                                                 <div class="input-group mb-2">
-                                                    <input type="hidden" name="tasks[{{ $loop->index }}][id]" value="{{ $task->id }}">
+                                                    <input type="hidden" name="tasks[{{ $loop->index }}][id]"
+                                                        value="{{ $task->id }}">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="tasks[{{ $loop->index }}][status]" {{ $task->status == 'completed' ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="tasks[{{ $loop->index }}][status]">{{ $task->task }}</label>
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="tasks[{{ $loop->index }}][status]"
+                                                            {{ $task->status == 'completed' ? 'checked' : '' }}>
+                                                        <label class="form-check-label"
+                                                            for="tasks[{{ $loop->index }}][status]">{{ $task->task }}</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -164,7 +183,8 @@
         </div>
 
         <!-- View All Progress Modal -->
-        <div class="modal fade" id="viewAllProgressModal" tabindex="-1" aria-labelledby="viewAllProgressModalLabel" aria-hidden="true">
+        <div class="modal fade" id="viewAllProgressModal" tabindex="-1" aria-labelledby="viewAllProgressModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -190,18 +210,24 @@
                                 </thead>
                                 <tbody class="text-center">
                                     @php
-                                        $sortedTrainees = $dailyTasks->sortByDesc(function ($tasks) {
-                                            return $tasks->where('status', 'completed')->count() / $tasks->count();
-                                        });
+                                        $sortedTrainees = $dailyTasks
+                                            ->filter(function ($tasks) {
+                                                return $tasks->first()->trainee->status === 'active';
+                                            })
+                                            ->sortByDesc(function ($tasks) {
+                                                return $tasks->where('status', 'completed')->count() / $tasks->count();
+                                            });
 
                                         $index = 1;
                                     @endphp
+
                                     @foreach ($sortedTrainees as $traineeId => $tasks)
                                         @php
                                             $trainee = $tasks->first()->trainee;
                                             $totalTasks = $tasks->count();
                                             $completedTasks = $tasks->where('status', 'completed')->count();
-                                            $totalPercentageDone = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
+                                            $totalPercentageDone =
+                                                $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 2) : 0;
                                         @endphp
                                         <tr>
                                             <td>#{{ $index++ }}</td>
@@ -229,7 +255,8 @@
                                                             break;
                                                     }
                                                 @endphp
-                                                <td style="background-color: {{ $bgColor }}; color: {{ $fontColor }}; text-align: center; font-weight: bold;">
+                                                <td
+                                                    style="background-color: {{ $bgColor }}; color: {{ $fontColor }}; text-align: center; font-weight: bold;">
                                                     {{ ucfirst($status) }}
                                                 </td>
                                             @endforeach
@@ -245,7 +272,8 @@
         </div>
 
         <!-- Manage Task Modal -->
-        <div class="modal fade" id="manageTaskModal" tabindex="-1" aria-labelledby="manageTaskModalLabel" aria-hidden="true">
+        <div class="modal fade" id="manageTaskModal" tabindex="-1" aria-labelledby="manageTaskModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -263,17 +291,22 @@
                                 @foreach ($uniqueTasks as $task)
                                     <div class="form-group task-group">
                                         <div class="input-group mb-2">
-                                            <input type="hidden" name="tasks[{{ $loop->index }}][id]" value="{{ $task->id }}">
-                                            <input type="text" class="form-control" name="tasks[{{ $loop->index }}][task]" value="{{ $task->task }}" required readonly>
+                                            <input type="hidden" name="tasks[{{ $loop->index }}][id]"
+                                                value="{{ $task->id }}">
+                                            <input type="text" class="form-control"
+                                                name="tasks[{{ $loop->index }}][task]" value="{{ $task->task }}"
+                                                required readonly>
                                             <div class="input-group-append">
-                                                <span class="btn btn-danger" onclick="removeTask(this, '{{ $task->id }}')">Remove</span>
+                                                <span class="btn btn-danger"
+                                                    onclick="removeTask(this, '{{ $task->id }}')">Remove</span>
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="addTask()">Add More Task</button>
+                                <button type="button" class="btn btn-secondary" onclick="addTask()">Add More
+                                    Task</button>
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
                         </form>
@@ -282,8 +315,9 @@
             </div>
         </div>
 
-        <!-- Reset Password Modal -->   
-        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+        <!-- Reset Password Modal -->
+        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-password">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -351,25 +385,27 @@
                 }
 
                 fetch('{{ route('resetTasks') }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ password: password })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert("Invalid password or an error occurred while resetting tasks.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("An error occurred while resetting tasks.");
-                });
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            password: password
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert("Invalid password or an error occurred while resetting tasks.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while resetting tasks.");
+                    });
             }
 
             document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
