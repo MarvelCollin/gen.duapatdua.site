@@ -13,7 +13,6 @@ class HomeController extends Controller
     public function index()
     {
         $latestRundown = Rundown::latest()->first();
-        $announcements = Announcement::all()->reverse();
         if ($latestRundown) {
             $rundownDetails = RundownDetail::where('rundown_id', $latestRundown->id)->get();
         } else {
@@ -25,7 +24,7 @@ class HomeController extends Controller
         $twoHoursAgo = $currentTime->subHours(2);
         $latestCaseSolves = CaseSolve::where('created_at', '>=', $twoHoursAgo)->get();
 
-        return view('home', compact('latestRundown', 'rundownDetails', 'latestCaseSolves', 'announcements'));
+        return view('home', compact('latestRundown', 'rundownDetails', 'latestCaseSolves'));
     }
 
     public function createAnn(Request $request){

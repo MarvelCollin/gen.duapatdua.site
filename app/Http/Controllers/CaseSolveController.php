@@ -30,7 +30,7 @@ class CaseSolveController extends Controller
         ]);
 
         DB::beginTransaction();
-        
+
         try {
             $caseSolve = CaseSolve::create([
                 'title' => $request->title,
@@ -67,7 +67,12 @@ class CaseSolveController extends Controller
     public function show($id)
     {
         $caseSolve = CaseSolve::findOrFail($id);
-        $caseSolveDetails = CaseSolveDetail::where('case_solve_id', $id)->with('caseSubtitles')->get();
+        $caseSolveDetails = CaseSolveDetail::where('case_solve_id', $id)
+            ->whereHas('trainee', function ($query) {
+                $query->where('status', 'active');
+            })
+            ->with('caseSubtitles')
+            ->get();
 
         return view('progress', compact('caseSolve', 'caseSolveDetails'));
     }
@@ -77,7 +82,7 @@ class CaseSolveController extends Controller
         $caseSolve = CaseSolve::findOrFail($id);
 
         DB::beginTransaction();
-        
+
         try {
             foreach ($request->subtitles as $subtitleId => $subtitleData) {
                 $subtitle = CaseSubtitle::findOrFail($subtitleId);
@@ -114,7 +119,7 @@ class CaseSolveController extends Controller
         ]);
 
         DB::beginTransaction();
-        
+
         try {
             $caseSolve->update([
                 'title' => $request->title,

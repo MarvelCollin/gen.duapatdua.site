@@ -23,6 +23,9 @@
                 <li class="nav-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('home') }}">Home</a>
                 </li>
+                <li class="nav-item {{ Route::currentRouteName() == 'rundowns.index' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('rundowns.index') }}">Rundown</a>
+                </li>
                 <li class="nav-item {{ Route::currentRouteName() == 'trainee.index' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('trainee.index') }}">Trainee List</a>
                 </li>
