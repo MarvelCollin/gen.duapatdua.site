@@ -37,10 +37,14 @@
         </div>
 
         @php
-            $sortedDetails = $bpprojectDetails->sortBy(function ($detail) {
-                preg_match('/T0(\d+)/', $detail->trainee->trainee_number, $matches);
-                return (int) $matches[1];
-            });
+            $sortedDetails = $bpprojectDetails
+                ->filter(function ($detail) {
+                    return $detail->trainee->status == 'active';
+                })
+                ->sortBy(function ($detail) {
+                    preg_match('/T0(\d+)/', $detail->trainee->trainee_number, $matches);
+                    return (int) $matches[1];
+                });
         @endphp
 
         <div class="row">
