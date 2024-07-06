@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('profile');
             $table->integer('totalForum');
             $table->integer('totalAcq');
-            $table->integer('totalCatering');
+            $table->integer('totalCatering')->nullable();
             $table->string('bookCatering')->nullable();
             $table->timestamps();
         });

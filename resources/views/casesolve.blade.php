@@ -90,6 +90,12 @@
                                                 </div>
 
                                                 <div class="form-group">
+                                                    <label for="desc">Description:</label>
+                                                    <input type="text" id="desc" name="desc" class="form-control"
+                                                        value="{{ $caseSolve->title }}">
+                                                </div>
+
+                                                <div class="form-group">
                                                     <label for="subject">Subject:</label>
                                                     <select id="subject" name="subject" class="form-control"
                                                         value="{{ $caseSolve->subject }}">
