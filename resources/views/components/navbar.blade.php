@@ -53,6 +53,9 @@
                 <li class="nav-item {{ Route::currentRouteName() == 'showPresentation' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('showPresentation') }}">Presentation</a>
                 </li>
+                <li class="nav-item {{ Route::currentRouteName() == 'showCatering' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('showCatering') }}">Catering</a>
+                </li>
             </ul>
         <ul class="navbar-nav navbar-nav-no-margin">
             <a class="nav-link" id="typed-text" style="color:white !important;"></a>

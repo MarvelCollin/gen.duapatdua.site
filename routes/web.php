@@ -7,6 +7,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\BpController;
+use App\Http\Controllers\CateringController;
 use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PermissionController;
@@ -94,4 +95,6 @@ Route::middleware(['check.password'])->group(function () {
     Route::post('/daily-tasks/create', [DailyTaskController::class, 'create'])->name('createTasks');    
     Route::put('/dailytask/update/{id}', [DailyTaskController::class, 'update'])->name('updateTraineeTasks');
     Route::post('/resetTasks', [DailyTaskController::class, 'resetTasks'])->name('resetTasks');
+
+    Route::get('/catering', [CateringController::class, 'show'])->name('showCatering');
 });

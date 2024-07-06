@@ -32,4 +32,8 @@ class Trainee extends Model
     public function dailyTasks(){
         return $this->hasMany(DailyTask::class);
     }
+
+    public function caterings(){
+        return $this->hasMany(Catering::class);
+    }
 }
