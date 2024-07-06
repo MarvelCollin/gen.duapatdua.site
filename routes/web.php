@@ -97,4 +97,6 @@ Route::middleware(['check.password'])->group(function () {
     Route::post('/resetTasks', [DailyTaskController::class, 'resetTasks'])->name('resetTasks');
 
     Route::get('/catering', [CateringController::class, 'show'])->name('showCatering');
+    Route::post('/update-catering', [CateringController::class, 'updateCatering'])->name('updateCatering');
+
 });

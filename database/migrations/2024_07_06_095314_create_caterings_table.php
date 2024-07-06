@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('caterings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('trainee_id')->constrained('trainees')->onDelete('cascade');
-            $table->string('price');
+            $table->string('description');
+            $table->integer('price');
             $table->string('status');
             $table->timestamps();
         });
