@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('subject');
             $table->string('session');
+            $table->string('desc')->nullable();
             $table->timestamps();
         });
     }

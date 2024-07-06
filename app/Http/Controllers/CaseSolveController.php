@@ -125,6 +125,7 @@ class CaseSolveController extends Controller
                 'title' => $request->title,
                 'subject' => $request->subject,
                 'session' => $request->session,
+                'desc' => $request->desc
             ]);
 
             $subtitles = $request->subtitles;

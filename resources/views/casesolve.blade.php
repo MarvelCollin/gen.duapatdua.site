@@ -76,7 +76,7 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                </div>
+                            </div>
                                 <div class="modal-body">
                                     <form action="{{ route('casesolve.update', $caseSolve->id) }}" method="POST">
                                         @csrf
@@ -92,7 +92,7 @@
                                                 <div class="form-group">
                                                     <label for="desc">Description:</label>
                                                     <input type="text" id="desc" name="desc" class="form-control"
-                                                        value="{{ $caseSolve->title }}">
+                                                        value="{{ $caseSolve->desc }}">
                                                 </div>
 
                                                 <div class="form-group">

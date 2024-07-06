@@ -20,8 +20,9 @@
 @section('content')
     <div class="container text-center">
         <h1 class="mb-4">{{ $caseSolve->title }}</h1>
-        <p class="mb-2">Subject: {{ $caseSolve->subject }}</p>
-        <p class="mb-5">Session: {{ $caseSolve->session }}</p>
+        <h3 class="mb-2">Subject: {{ $caseSolve->subject }}</h3>
+        <p class="mb-2">Session: {{ $caseSolve->session }}</p>
+        <p class="mb-5">{{ $caseSolve->desc }}</p>
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
