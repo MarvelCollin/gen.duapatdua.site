@@ -6,30 +6,42 @@
         width: 1.5em;
         height: 1.5em;
     }
+
     .form-container {
         background-color: #f8f9fa;
         padding: 20px;
         border-radius: 5px;
     }
+
     .btn-group {
         margin-bottom: 20px;
     }
+
     .password-input {
         margin-bottom: 10px;
     }
 </style>
 
 @section('content')
-    <div class="container form-container mt-4">
-        <h2 class="mb-4">Catering Bookings</h2>
+    @php
+        $index = 0;
 
-        @if(session('error'))
+        foreach ($trainees as $trainee) {
+            if($trainee->bookCatering === 'accept'){
+                $index++;   
+            }
+        }
+    @endphp
+    <div class="container form-container mt-4">
+        <h2 class="mb-4">Catering Bookings | {{ $index }} Pesanan</h2>
+
+        @if (session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
             </div>
         @endif
 
-        @if(session('success'))
+        @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
@@ -56,13 +68,15 @@
             @endphp
             <div class="container">
                 <div class="row">
+
                     @foreach ($sortedTrainees as $trainee)
                         <div class="col-md-4">
                             <div class="form-check mb-3">
                                 <input type="hidden" name="trainee_number[]" value="{{ $trainee->trainee_number }}">
                                 <input type="checkbox" class="form-check-input custom-checkbox"
-                                    id="trainee{{ $trainee->trainee_number }}" name="bookCatering[{{ $trainee->trainee_number }}]"
-                                    value="accept" {{ $trainee->bookCatering === 'accept' ? 'checked' : '' }}>
+                                    id="trainee{{ $trainee->trainee_number }}"
+                                    name="bookCatering[{{ $trainee->trainee_number }}]" value="accept"
+                                    {{ $trainee->bookCatering === 'accept' ? 'checked' : '' }}>
                                 <label class="ml-4 form-check-label" for="trainee{{ $trainee->trainee_number }}">
                                     <h4>{{ $trainee->trainee_number }} - {{ $trainee->name }}</h4>
                                 </label>
@@ -71,12 +85,13 @@
                     @endforeach
                 </div>
             </div>
-            
+
             <button type="submit" class="btn btn-primary">Update Catering</button>
         </form>
     </div>
 
-    <div class="modal fade" id="resetBookCateringModal" tabindex="-1" aria-labelledby="resetBookCateringModalLabel" aria-hidden="true">
+    <div class="modal fade" id="resetBookCateringModal" tabindex="-1" aria-labelledby="resetBookCateringModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form method="POST" action="{{ route('resetBookCatering') }}">
@@ -89,7 +104,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="password" class="form-control" name="reset_password" placeholder="Password" required>
+                            <input type="password" class="form-control" name="reset_password" placeholder="Password"
+                                required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -101,7 +117,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="resetTotalCateringModal" tabindex="-1" aria-labelledby="resetTotalCateringModalLabel" aria-hidden="true">
+    <div class="modal fade" id="resetTotalCateringModal" tabindex="-1" aria-labelledby="resetTotalCateringModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form method="POST" action="{{ route('resetTotalCatering') }}">
@@ -114,7 +131,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="password" class="form-control" name="reset_password" placeholder="Password" required>
+                            <input type="password" class="form-control" name="reset_password" placeholder="Password"
+                                required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -126,11 +144,15 @@
         </div>
     </div>
 
-    <div class="modal fade" id="traineeDetailsModal" tabindex="-1" aria-labelledby="traineeDetailsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="traineeDetailsModal" tabindex="-1" aria-labelledby="traineeDetailsModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="traineeDetailsModalLabel">Catering Details</h5>
+
+
+                    <h5 class="modal-title" id="traineeDetailsModalLabel">Catering Details | {{ $index }} Pesanan
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
