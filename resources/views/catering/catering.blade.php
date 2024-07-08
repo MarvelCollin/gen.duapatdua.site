@@ -27,8 +27,8 @@
         $index = 0;
 
         foreach ($trainees as $trainee) {
-            if($trainee->bookCatering === 'accept'){
-                $index++;   
+            if ($trainee->bookCatering === 'accept') {
+                $index++;
             }
         }
     @endphp
@@ -67,6 +67,7 @@
                 $sortedTrainees = $trainees->sortBy('trainee_number');
             @endphp
             <div class="container">
+                <button type="submit" class="btn btn-primary mb-2">Update Catering</button>
                 <div class="row">
 
                     @foreach ($sortedTrainees as $trainee)
@@ -86,7 +87,6 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Update Catering</button>
         </form>
     </div>
 
@@ -149,8 +149,6 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-
-
                     <h5 class="modal-title" id="traineeDetailsModalLabel">Catering Details | {{ $index }} Pesanan
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -167,13 +165,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($trainees as $trainee)
-                                <tr>
-                                    <td>{{ $trainee->trainee_number }}</td>
-                                    <td>{{ $trainee->name }}</td>
-                                    <td>{{ $trainee->totalCatering }}</td>
-                                </tr>
+                            @foreach ($trainees->sortBy('trainee_number') as $trainee)
+                                @if (strpos($trainee->trainee_number, 'T0') === 0)
+                                    <tr>
+                                        <td>{{ $trainee->trainee_number }}</td>
+                                        <td>{{ $trainee->name }}</td>
+                                        <td>{{ $trainee->totalCatering }}</td>
+                                    </tr>
+                                @endif
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>
