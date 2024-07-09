@@ -1,0 +1,120 @@
+package main;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+	Scanner s = new Scanner(System.in);
+	ArrayList<String> users;
+	String userFile = "credentials.txt";
+	
+	void cls() {
+		for (int i = 0; i < 40; i++) {
+			System.out.println();
+			System.out.println();
+		}
+	}
+	
+	void enter() {
+		System.out.println("Please press enter to continue..");
+		s.nextLine();
+	}
+	
+	void login() {
+		String username, password;
+		System.out.print("Input username >> ");
+		username = s.nextLine();
+		
+		System.out.print("Input password >> ");
+		password = s.nextLine();
+		
+		try {
+			users = (ArrayList<String>) Files.readAllLines(Paths.get(userFile));
+			
+			for(String user : users) {
+				String[] parts = user.split(",", 3);
+				if(parts[1].equals(username) && parts[2].equals(password)) {
+					welcome();
+					return;
+				}
+			}
+			System.out.println("Invalid Credentials");
+			System.out.println();
+			enter();
+			cls();
+			menu();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	void welcome() {
+		int choice;
+		
+		System.out.println("1. Fill Pool");
+		System.out.println("2. Empty Pool");
+		System.out.println("3. Register User");
+		System.out.println("4. Logout");
+		System.out.print(">> ");
+		choice = s.nextInt(); s.nextLine();
+		
+		switch(choice) {
+		case 1:
+			login();
+			break;
+		case 2:
+			about();
+			break;
+		case 3:
+			break;
+		default:
+			menu();
+			break;
+		}
+		
+	}
+	
+	void about() {
+		
+	}
+	
+	void menu() {
+		int choice;
+		
+		System.out.println("1. Login");
+		System.out.println("2. About us");
+		System.out.println("3. Exit");
+		System.out.print(">> ");
+		choice = s.nextInt(); s.nextLine();
+		
+		switch(choice) {
+		case 1:
+			login();
+			break;
+		case 2:
+			about();
+			break;
+		case 3:
+			break;
+		default:
+			menu();
+			break;
+		}
+	}
+	
+	
+	public Main() {
+		menu();
+	}
+
+	public static void main(String[] args) {
+		new Main();
+	}
+
+}

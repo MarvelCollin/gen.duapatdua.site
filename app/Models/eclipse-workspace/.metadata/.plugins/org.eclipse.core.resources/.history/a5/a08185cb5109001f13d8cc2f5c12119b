@@ -1,0 +1,173 @@
+package main;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class User {
+	Scanner s = new Scanner(System.in);
+	String poolFile = "pool.txt";
+	List<String> pool = new ArrayList<>();
+	Public pb = new Public();
+	char [][]poolArray;
+	int numRows, numCols;
+	String currUser;
+	String Equipment;
+	
+	int xPlayer = 1, yPlayer = 1; 
+	
+	void init() {
+		try {
+			pool = Files.readAllLines(Paths.get(poolFile));
+		
+//			for(String p : pool) {
+//				System.out.println(p);
+//			}
+			
+		    numRows = pool.size();
+		    numCols = pool.get(0).length();
+
+		    poolArray = new char[numRows][numCols];
+
+		    for (int i = 0; i < numRows; i++) {
+		        String row = pool.get(i);
+		        for (int j = 0; j < numCols; j++) {
+		            poolArray[i][j] = row.charAt(j);
+		        }
+		    }
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+	}
+	
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	void move() {
+		printMap();
+		String choice = null;
+		
+		System.out.print("MOVE (wasd)>> ");
+		choice = s.nextLine();
+		System.out.println();
+		int preX = 0, preY = 0;
+		
+		if(choice.equals("a")) {
+			preX = -1;
+		} else if(choice.equals("w")) {
+			preY = -1;
+		} else if(choice.equals("s")) {
+			preY = 1;
+		} else if(choice.equals("d")) {
+			preX = 1;
+		} else {
+			move();
+		}
+		
+		if(poolArray[yPlayer + preY][xPlayer + preX] == '#') {
+			move();
+		} else {
+			yPlayer+= preY;
+			xPlayer += preX;
+		}
+		
+		pb.cls();
+		
+	}
+	
+	void printMap() {
+		for (int i = 0; i < numRows; i++) {
+		       String row = pool.get(i);
+		       for (int j = 0; j < numCols; j++) {
+		    	   if(i == yPlayer && j == xPlayer) {
+		    		   System.out.print("P");   
+		    	   } else {
+		    		   System.out.print(poolArray[i][j]);
+		    	   }
+		       }
+		       System.out.println();
+		}
+
+	}
+	
+	void swim() {
+		pb.cls();
+		
+		init();
+		while(true) move();
+	}
+	
+	void tutorial() {
+		System.out.println("Bla bla bla bla bla ");
+		pb.enter();
+		
+		userMenu(currUser);
+	}
+	
+	void store() {
+		int choice;
+		
+		System.out.println("1. Swimsuit");
+		System.out.println("2. Swimcap");
+		System.out.println("3. Goggle");
+		System.out.println("4. Exit");
+		
+		choice = s.nextInt();
+		
+		switch(choice) {
+		case 1:
+			swim();
+			break;
+		case 2:
+			tutorial();
+			break;
+		case 3:
+			store();
+			break;
+		case 4:
+			userMenu(currUser);
+			break;
+		default:
+			store();
+			break;
+		}
+		
+	}
+	
+	public void userMenu(String user) {
+		currUser = user;
+		int choice;
+		System.out.println("Welcome " + user);
+		System.out.println("1. Swim");
+		System.out.println("2. Tutorial");
+		System.out.println("3. Store");
+		System.out.println("4. Logout");
+		System.out.print("Choose >> ");
+	
+		choice = s.nextInt();
+		
+		switch(choice) {
+		case 1:
+			swim();
+			break;
+		case 2:
+			tutorial();
+			break;
+		case 3:
+			store();
+			break;
+		case 4:
+			break;
+		default:
+			userMenu(user);
+			break;
+		}
+	}
+	
+}

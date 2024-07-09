@@ -46,7 +46,6 @@
             </div>
         </div>
 
-
         @php
             use Illuminate\Support\Str;
         @endphp
@@ -60,7 +59,7 @@
                             <div class="card">
                                 <div class="card-body text-center animate__animated animate__fadeIn">
                                     <div class="d-flex text-center justify-content-between align-items-center">
-                                        <a class="card-text text-center ">{{ $forum->link }}</a>
+                                        <a href="{{ $forum->link }}" class="card-text text-center">{{ Str::limit($forum->link, 30, '...') }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +107,7 @@
                                                                 {{ $forum->forum_status == 'yes' ? 'checked' : '' }}
                                                                 onchange="this.form.submit()">
                                                             <a href="{{ $forum->link }}"
-                                                                class="card-text d-inline">{{ $forum->link }}</a>
+                                                                class="card-text d-inline">{{ Str::limit($forum->link, 30, '...') }}</a>
                                                         </div>
                                                     </form>
                                                     <div class="ml-auto">
@@ -156,7 +155,6 @@
                 </div>
             </div>
         </div>
-
 
         <script>
             const searchInput = document.getElementById('searchInput');

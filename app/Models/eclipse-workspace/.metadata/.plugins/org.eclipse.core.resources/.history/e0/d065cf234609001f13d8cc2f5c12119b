@@ -1,0 +1,32 @@
+package main;
+
+import java.util.Scanner;
+
+public class Main {
+	Scanner s = new Scanner(System.in);
+	
+	void login() {
+		
+	}
+	
+	void menu() {
+		int choice;
+		
+		System.out.println("1. Login");
+		System.out.println("2. About us");
+		System.out.println("3. Exit");
+		System.out.print(">> ");
+		choice = s.nextInt(); s.nextLine();
+		
+	}
+	
+	
+	public Main() {
+
+	}
+
+	public static void main(String[] args) {
+		new Main();
+	}
+
+}

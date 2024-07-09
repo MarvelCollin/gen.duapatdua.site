@@ -1,0 +1,70 @@
+package main;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+	Scanner s = new Scanner(System.in);
+	ArrayList<String> users;
+	String userFile = "credentials.txt";
+	
+	void enter() {
+		System.out.println("Please press enter to continue..");
+		s.nextLine();
+	}
+	
+	void login() {
+		try {
+			users = (ArrayList<String>) Files.readAllLines(Paths.get(userFile));
+			
+			for(String user : users) {
+				System.out.println(user);
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	void about() {
+		
+	}
+	
+	void menu() {
+		int choice;
+		
+		System.out.println("1. Login");
+		System.out.println("2. About us");
+		System.out.println("3. Exit");
+		System.out.print(">> ");
+		choice = s.nextInt(); s.nextLine();
+		
+		switch(choice) {
+		case 1:
+			login();
+			break;
+		case 2:
+			about();
+			break;
+		case 3:
+			break;
+		default:
+			menu();
+			break;
+		}
+	}
+	
+	
+	public Main() {
+
+	}
+
+	public static void main(String[] args) {
+		new Main();
+	}
+
+}

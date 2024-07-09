@@ -1,0 +1,49 @@
+package main;
+
+import java.util.Scanner;
+
+public class Main {
+	Scanner s = new Scanner(System.in);
+	
+	void login() {
+		
+	}
+	
+	void about() {
+		
+	}
+	
+	void menu() {
+		int choice;
+		
+		System.out.println("1. Login");
+		System.out.println("2. About us");
+		System.out.println("3. Exit");
+		System.out.print(">> ");
+		choice = s.nextInt(); s.nextLine();
+		
+		switch(choice) {
+		case 1:
+			login();
+			break;
+		case 2:
+			about();
+			break;
+		case 3:
+			break;
+		default:
+			menu();
+			break;
+		}
+	}
+	
+	
+	public Main() {
+
+	}
+
+	public static void main(String[] args) {
+		new Main();
+	}
+
+}

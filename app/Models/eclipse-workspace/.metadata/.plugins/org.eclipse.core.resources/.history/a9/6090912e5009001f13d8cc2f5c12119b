@@ -1,0 +1,90 @@
+package main;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class User {
+	Scanner s = new Scanner(System.in);
+	String poolFile = "pool.txt";
+	List<String> pool = new ArrayList<>();
+	Public pb = new Public();
+	char [][]poolArray;
+	
+	void init() {
+		try {
+			pool = Files.readAllLines(Paths.get(poolFile));
+		
+//			for(String p : pool) {
+//				System.out.println(p);
+//			}
+			
+		    int numRows = pool.size();
+		    int numCols = pool.get(0).length();
+
+		    poolArray = new char[numRows][numCols];
+
+		    for (int i = 0; i < numRows; i++) {
+		        String row = pool.get(i);
+		        for (int j = 0; j < numCols; j++) {
+		            poolArray[i][j] = row.charAt(j);
+		        }
+		    }
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+	}
+	
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	void swim() {
+		pb.cls();
+		
+		init();
+	}
+	
+	void tutorial() {
+		
+	}
+	
+	void store() {
+		
+	}
+	
+	public void userMenu(String user) {
+		int choice;
+		System.out.println("Welcome " + user);
+		System.out.println("1. Swim");
+		System.out.println("2. Tutorial");
+		System.out.println("3. Store");
+		System.out.println("4. Logout");
+		System.out.print("Choose >> ");
+	
+		choice = s.nextInt();
+		
+		switch(choice) {
+		case 1:
+			swim();
+			break;
+		case 2:
+			tutorial();
+			break;
+		case 3:
+			store();
+			break;
+		case 4:
+			break;
+		default:
+			userMenu(user);
+			break;
+		}
+	}
+	
+}
